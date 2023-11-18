@@ -25,11 +25,12 @@ contract TokenFactory {
         address owner, 
         address[] memory _verifiers, 
         bytes32[][] memory _parsArray,
+        address _oracle,
         bytes32 salt
     ) external returns (address payable proxy) {
         proxy = payable(Clones.cloneDeterministic(address(master), salt));
         
-        Token(proxy).init(__name, __symbol, owner, _verifiers, _parsArray);
+        Token(proxy).init(__name, __symbol, owner, _verifiers, _parsArray, _oracle);
         emit TokenCreated(msg.sender, proxy);
 
         return proxy;

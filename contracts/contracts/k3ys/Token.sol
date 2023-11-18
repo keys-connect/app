@@ -36,13 +36,13 @@ contract Token is ERC721URIStorageCustom, Initializable, Ownable {
     }
 
     // constructor is dummy for proxy master
-    constructor(address _oracle) Ownable(msg.sender) ERC721Custom("", "") {
-        oracle = _oracle;
+    constructor() Ownable(msg.sender) ERC721Custom("", "") {
         nextTokenId = 0;
     }
 
     /** actual initialization when creating proxy */
-    function init (string memory __name, string memory __symbol, address owner, address[] memory _verifiers, bytes32[][] memory _parsArray) external initializer {
+    function init (string memory __name, string memory __symbol, address owner, address[] memory _verifiers, bytes32[][] memory _parsArray, address _oracle) external initializer {
+        oracle = _oracle;
         _name = __name;
         _symbol = __symbol;
 
