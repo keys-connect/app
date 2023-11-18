@@ -4,9 +4,6 @@
 // Price feeds addresses: https://docs.chain.link/data-feeds/price-feeds/addresses
 // Chain IDs: https://chainlist.org/?testnets=true
 
-// Loads environment variables from .env.enc file (if it exists)
-require('@chainlink/env-enc').config();
-
 const DEFAULT_VERIFICATION_BLOCK_CONFIRMATIONS = 2;
 
 const npmCommand = process.env.npm_lifecycle_event;
@@ -88,4 +85,4 @@ const networks = {
   },
 };
 
-export default networks;
+export { networks };

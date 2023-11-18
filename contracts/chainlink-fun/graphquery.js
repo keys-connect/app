@@ -1,28 +1,30 @@
 const graphKey = secrets.graphKey;
+const address = args[0];
 
 const graphRequest = Functions.makeHttpRequest({
-  url: `https://gateway-arbitrum.network.thegraph.com/api/${graphKey}/subgraphs/id/HUZDsRpEVP2AvzDCyzDHtdc64dyDxx8FQjzsmqSg4H3B`,
+  url: `https://api-v2-mumbai.lens.dev`,
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
   },
 
-  data: {
-    query: `{
-                poolDayDatas(
-                first:3
-                orderBy: date
-                orderDirection: desc
-                where: {pool: "0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640"}
-                ) {
-                id
-                liquidity
-                date
-                volumeUSD
-                tick
-                }
-            }`,
-  },
+  data: `
+    {
+      "operationName":"LensProfiles",
+      "variables": {
+        "address":"${address}"},
+        "query": "query LensProfiles($address: EvmAddress!) {
+          profiles( request: { where: { ownedBy: [$address]}}) {
+            items {
+              id
+              createdAt
+              handle {
+                fullHandle
+              }
+            }
+          }
+        }
+    }`,
 });
 
 const [graphResponse] = await Promise.all([graphRequest]);

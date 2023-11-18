@@ -11,6 +11,7 @@ import 'tsconfig-paths/register';
 
 import '@nomicfoundation/hardhat-ignition';
 import '@nomicfoundation/hardhat-viem';
+import '@nomiclabs/hardhat-ethers';
 import 'solidity-coverage';
 import 'hardhat-gas-reporter';
 

@@ -6,7 +6,7 @@ export default defineConfig({
   contracts: [],
   plugins: [
     hardhat({
-      artifacts: 'build/artifacts/',
+      artifacts: 'build/artifacts',
       project: '.',
     }),
   ],
