@@ -1,19 +1,26 @@
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 
 import { WagmiConfig } from "wagmi";
-import { arbitrum, mainnet } from "viem/chains";
+import {
+  arbitrum,
+  gnosis,
+  gnosisChiado,
+  goerli,
+  mainnet,
+  scrollSepolia,
+} from "viem/chains";
 import { ReactNode } from "react";
 
-const projectId = "YOUR_PROJECT_ID";
+const projectId = process.env.WALLET_CONNECT_PROJECT_ID!;
 
 const metadata = {
-  name: "Web3Modal",
+  name: "k3ys.xyz",
   description: "Web3Modal Example",
-  url: "https://web3modal.com",
-  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+  url: "https://k3ys.xyz",
+  icons: ["https://k3ys.xyz/logo.png"],
 };
 
-const chains = [mainnet, arbitrum];
+const chains = [mainnet, gnosis, goerli, gnosisChiado, scrollSepolia];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 createWeb3Modal({ wagmiConfig, projectId, chains });
