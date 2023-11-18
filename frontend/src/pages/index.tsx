@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
+import { ConditionBuilder } from "@/components/condition-builder";
 
 export default function Home() {
   return (
-    <div>
-      asdas
-      <Button>asds</Button>
+    <div className="min-w-full">
+      <ConditionBuilder />
     </div>
   );
 }
