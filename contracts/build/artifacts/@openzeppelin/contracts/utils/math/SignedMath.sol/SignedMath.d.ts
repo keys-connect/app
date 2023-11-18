@@ -20,24 +20,11 @@ export interface SignedMath$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
-    contractName: "SignedMath",
-    constructorArgs?: [],
-    config?: DeployContractConfig
-  ): Promise<GetContractReturnType<SignedMath$Type["abi"]>>;
-  export function deployContract(
     contractName: "@openzeppelin/contracts/utils/math/SignedMath.sol:SignedMath",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<SignedMath$Type["abi"]>>;
 
-  export function sendDeploymentTransaction(
-    contractName: "SignedMath",
-    constructorArgs?: [],
-    config?: SendDeploymentTransactionConfig
-  ): Promise<{
-    contract: GetContractReturnType<SignedMath$Type["abi"]>;
-    deploymentTransaction: GetTransactionReturnType;
-  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/utils/math/SignedMath.sol:SignedMath",
     constructorArgs?: [],
@@ -47,11 +34,6 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
-  export function getContractAt(
-    contractName: "SignedMath",
-    address: Address,
-    config?: GetContractAtConfig
-  ): Promise<GetContractReturnType<SignedMath$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/utils/math/SignedMath.sol:SignedMath",
     address: Address,
