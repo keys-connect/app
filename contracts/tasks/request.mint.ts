@@ -5,8 +5,6 @@ import * as path from 'path';
 import { config as envConfig } from 'dotenv';
 envConfig({ path: './.env' });
 
-console.log({ PK: process.env.PRIVATE_KEY });
-
 import { networks } from '../chainlink-fun-config/networks';
 
 task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) => {
