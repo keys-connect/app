@@ -18,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Web3Modal>
       <DndProvider backend={HTML5Backend}>
-        <Layout>
+        <Layout showNetworkButtons={pageProps.hideNetworkButtons}>
           <Component {...pageProps} />
         </Layout>
       </DndProvider>
