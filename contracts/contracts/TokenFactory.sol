@@ -21,12 +21,15 @@ contract TokenFactory {
 
     function create(
         string memory __name, 
-        string memory __symbol,
+        string memory __symbol, 
+        address owner, 
+        address[] memory _verifiers, 
+        bytes32[][] memory _parsArray,
         bytes32 salt
     ) external returns (address payable proxy) {
         proxy = payable(Clones.cloneDeterministic(address(master), salt));
         
-        Token(proxy).init(__name, __symbol);
+        Token(proxy).init(__name, __symbol, owner, _verifiers, _parsArray);
         emit TokenCreated(msg.sender, proxy);
 
         return proxy;

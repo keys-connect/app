@@ -1,10 +1,15 @@
 import { artifacts, viem } from 'hardhat';
 import { parseEther, parseUnits, TransactionReceipt, decodeEventLog, keccak256, stringToBytes } from 'viem';
 
-import { EventType, Registry, RegistryFactory, Signer, TokenCreatedEvent, TokenFactory, TransferEventType } from './viem.types';
+import { EventType, IVerifier, Signer, Token, TokenCreatedEvent, TokenFactory, TransferEventType } from './viem.types';
 
 export interface User {
   s: Signer;
+}
+
+export interface Condition {
+  verifier: HexStr;
+  pars: HexStr[];
 }
 
 export type HexStr = `0x${string}`;
@@ -62,12 +67,16 @@ export async function fastForwardToTimestamp(toTimestamp: bigint): Promise<void>
   await client.mine({ blocks: 1 });
 }
 
-export const deployToken = async (signer: Signer): Promise<Registry> => {
-  return viem.deployContract('Token', ["", ""], { walletClient: signer }) as unknown as Registry;
+export const deployToken = async (signer: Signer): Promise<Token> => {
+  return viem.deployContract('Token', [], { walletClient: signer }) as unknown as Token;
 };
 
-export const deployTokenFactory = async (masterAddress: string, signer: Signer): Promise<RegistryFactory> => {
-  return viem.deployContract('TokenFactory', [masterAddress], { walletClient: signer }) as unknown as RegistryFactory;
+export const deployVerifier = async (name: string, signer: Signer): Promise<IVerifier> => {
+  return viem.deployContract(name, [], { walletClient: signer }) as unknown as IVerifier;
+};
+
+export const deployTokenFactory = async (masterAddress: string, signer: Signer): Promise<TokenFactory> => {
+  return viem.deployContract('TokenFactory', [masterAddress], { walletClient: signer }) as unknown as TokenFactory;
 };
 
 export const getContractEventsFromHash = async (contractName: string, hash: HexStr): Promise<EventType[]> => {
@@ -98,9 +107,13 @@ export const getContractEventsFromReceipt = async (contractName: string, rec: Tr
   return events as unknown as EventType[];
 };
 
-export const createTokenHelper = async (factory: TokenFactory, name: string) => {
+export const createTokenHelper = async (factory: TokenFactory, owner: HexStr, name: string, conditions: Condition[]) => {
   const salt = keccak256(stringToBytes(Date.now().toString() + name));
-  const hash = await factory.write.create([name.slice(0,3), name, salt]);
+
+  const verifiers = conditions.map((c) => c.verifier);
+  const parsArray = conditions.map((c) => c.pars);
+
+  const hash = await factory.write.create([name.slice(0, 3), name, owner, verifiers, parsArray, salt]);
   const factoryEvents = await getContractEventsFromHash('TokenFactory', hash);
 
   const createdEvent = factoryEvents?.find((e) => e.eventName === 'TokenCreated') as TokenCreatedEvent;
@@ -108,35 +121,20 @@ export const createTokenHelper = async (factory: TokenFactory, name: string) => 
   const address = createdEvent?.args.token;
 
   const tokenEvents = await getContractEventsFromHash('Token', hash);
-  return {address, factoryEvents, tokenEvents}
-
-}
-
-export const vouchHelper = async (registryAddress: HexStr, by: User, vouched: User) => {
-  const token = await tokenFrom(registryAddress, by.s);
-  const tx = await token.write.vouch([vouched.s.account.address]);
-  const client = await viem.getPublicClient();
-  const receipt = await client.waitForTransactionReceipt({ hash: tx });
-  const events = await getContractEventsFromReceipt('Registry', receipt);
-
-  const transferEvent = events.find((e) => e.eventName === 'Transfer') as TransferEventType | undefined;
-
-  return { transferEvent, receipt };
+  return { address, factoryEvents, tokenEvents };
 };
 
-export const getChallengeParse = (returned: Awaited<ReturnType<Registry['read']['getChallenge']>>) => {
-  return {
-    creationDate: returned[0],
-    endDate: returned[1],
-    lastOutcome: returned[2],
-    nVoted: returned[3],
-    nFor: returned[4],
-    executed: returned[5],
-  };
+export const tokenFrom = (address: HexStr, signer: Signer): Promise<Token> => {
+  return viem.getContractAt('Token', address, { walletClient: signer }) as unknown as Promise<Token>;
 };
 
-export const tokenFrom = (address: HexStr, signer: Signer): Promise<Registry> => {
-  return viem.getContractAt('Token', address, { walletClient: signer }) as unknown as Promise<Registry>;
+export const addressToBytes32 = (adr: HexStr): HexStr => {
+  if (!adr.startsWith('0x') || adr.length !== 42) {
+    throw new Error('Invalid Ethereum address');
+  }
+
+  // Remove the '0x' prefix, then pad with zeros, and finally add '0x' prefix
+  return ('0x' + adr.slice(2).padStart(64, '0')) as HexStr;
 };
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
