@@ -1,10 +1,10 @@
-const fs = require('fs');
-const { Location, ReturnType, CodeLanguage } = require('@chainlink/functions-toolkit');
+import * as fs from 'fs';
+import { Location, ReturnType, CodeLanguage, SimulationInput } from '@chainlink/functions-toolkit';
 
-// Configure the request by setting the fields below
-const requestConfig = {
+// const requestConfig: SimulationInput = {
+const requestConfig: any = {
   // String containing the source code to be executed
-  source: fs.readFileSync('../chainlink-fun/graph-request.js').toString(),
+  source: fs.readFileSync('./chainlink-fun/graphquery.js').toString(),
   // source: fs.readFileSync("./API-request-example.js").toString(),
   // Location of source code (only Inline is currently supported)
   codeLocation: Location.Inline,

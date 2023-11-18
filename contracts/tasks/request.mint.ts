@@ -1,4 +1,6 @@
+import { simulateScript } from '@chainlink/functions-toolkit';
 import { task } from 'hardhat/config';
+import * as path from 'path';
 
 task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) => {
   const viem = hre.viem;
@@ -8,6 +10,10 @@ task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) =
   const subscriptionId = 825;
   const slotId = 0;
   const callbackGasLimit = 250_000;
+  const configpath = './chainlink-fun-config/request-config';
 
-  console.log(process.env.GRAPH_KEY);
+  const requestConfig = require(path.join(process.cwd(), configpath));
+
+  const { responseBytesHexstring, errorString } = await simulateScript(requestConfig);
+  console.log({ responseBytesHexstring, errorString });
 });
