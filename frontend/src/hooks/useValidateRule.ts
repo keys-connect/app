@@ -1,5 +1,5 @@
-import { RuleType } from "@/constants/components";
-import { Address, useEnsName, useQuery } from "wagmi";
+import { RuleType } from "@/constants/rules";
+import { Address, mainnet, useEnsName, useQuery } from "wagmi";
 
 type Parameter = {
   type: RuleType;
@@ -35,6 +35,8 @@ export function useValidateRule({ address, type, isTestnet }: Parameter) {
         }
         case "apecoin": {
         }
+        case "worldcoin": {
+        }
         default: {
           return false;
         }
@@ -50,6 +52,7 @@ export function useValidateRule({ address, type, isTestnet }: Parameter) {
     refetch: refetchEnsName,
   } = useEnsName({
     address: address!,
+    chainId: mainnet.id,
     enabled: type === "ens" && Boolean(address),
   });
   if (type === "ens") {
