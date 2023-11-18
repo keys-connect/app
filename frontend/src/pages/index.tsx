@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -14,7 +15,9 @@ export default function HomePage() {
           </div>
         </div>
         <div className="col-span-1 row-span-2 flex items-center justify-center border shadow rounded-lg">
-          <Button>Create Event</Button>
+          <Button asChild>
+            <Link href="/create">Create Event</Link>
+          </Button>
         </div>
         <div className="col-span-1 container flex flex-col items-center justify-center space-y-6 px-4 py-12 md:px-6 backdrop-blur-lg rounded-lg border shadow">
           <div className="flex flex-col space-y-4 sm:space-y-2 sm:space-x-0 sm:flex-col sm:items-center">

@@ -1,10 +1,13 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export function NavBar() {
   return (
     <nav className="bg-transparent border-b border-b-black/30">
       <div className="max-w-7xl py-2 mx-auto flex justify-between">
-        <Image src="/logo.png" width={100} height={50} alt="Logo" />
+        <Link href="/">
+          <Image src="/logo.png" width={100} height={50} alt="Logo" />
+        </Link>
         <div className="flex space-x-2">
           <w3m-network-button />
           <w3m-button />
