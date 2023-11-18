@@ -1,29 +1,32 @@
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { FormEventHandler, useRef, useState } from "react";
-import { CONDITIONALS, ConditionalItem, Conditionals } from "./conditionals";
-import { Conditional } from "./conditional";
-import { cn } from "@/lib/utils";
-import { useDrop } from "react-dnd";
 import {
   AlertDialog,
-  AlertDialogContent,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogCancel,
-  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { AlertDialogHeader, AlertDialogFooter } from "./ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { uploadFile } from "@/lib/lighthouse";
+import { cn } from "@/lib/utils";
+import { FormEventHandler, useRef, useState } from "react";
+import { useDrop } from "react-dnd";
+import { Conditional } from "./conditional";
+import { CONDITIONALS, ConditionalItem, Conditionals } from "./conditionals";
+import { AlertDialogFooter, AlertDialogHeader } from "./ui/alert-dialog";
+import { useAccount } from "wagmi";
 
 export function CreateKeyForm() {
   const titleRef = useRef<HTMLInputElement>(null);
-  const logoRef = useRef<HTMLInputElement>(null);
+  const [logo, setLogo] = useState<FileList | null>(null);
   const startDateRef = useRef<HTMLInputElement>(null);
   const endDateRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const contactLinkRef = useRef<HTMLInputElement>(null);
+  const ipfsHashRef = useRef<HTMLInputElement>(null);
+  const { address } = useAccount();
 
   const [conditionals, setConditionals] = useState<ConditionalItem[]>([]);
   const [{ isOver }, drop] = useDrop(
@@ -50,24 +53,51 @@ export function CreateKeyForm() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    console.log(
-      titleRef.current?.value,
-      logoRef.current?.value,
-      startDateRef.current?.value,
-      endDateRef.current?.value,
-      descriptionRef.current?.value,
-      contactLinkRef.current?.value
-    );
+    try {
+      let hash: string;
+      if (logo) {
+        const response = await uploadFile(logo);
+        hash = response.data.Hash;
+      } else if (ipfsHashRef.current?.value) {
+        hash = ipfsHashRef.current.value;
+      } else {
+        throw new Error("No hash");
+      }
+      const res = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/key", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          hash,
+          title: titleRef.current?.value,
+          startDate: startDateRef.current?.value,
+          endDate: endDateRef.current?.value,
+          description: descriptionRef.current?.value,
+          contactLink: contactLinkRef.current?.value,
+          address,
+          conditionals: conditionals.map((conditional) => ({
+            id: conditional.id,
+          })),
+        }),
+      });
 
-    setIsOpen(true);
+      const data = await res.json();
+
+      console.log({ data });
+    } catch (e) {
+      console.log(e);
+    }
+
+    return "";
   };
 
   return (
-    <section className="my-12 gap-8 grid grid-cols-2 mx-auto">
+    <section className="gap-8 grid grid-cols-2 mx-auto">
       <form
-        className="space-y-4 p-4 px-6 rounded-lg shadow border h-full"
+        className="space-y-4 p-4 px-6 rounded-lg shadow border"
         onSubmit={onSubmit}
       >
         <div>
@@ -92,6 +122,17 @@ export function CreateKeyForm() {
             className="w-full"
             id="logo"
             type="file"
+            onChange={(e) => {
+              if (e.target.files) {
+                setLogo(e.target.files);
+              }
+            }}
+          />
+          <Input
+            className="w-full"
+            type="text"
+            placeholder="or enter IPFS CID here"
+            ref={ipfsHashRef}
           />
         </div>
         <div className="grid grid-cols-2 gap-4">

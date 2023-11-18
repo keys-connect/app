@@ -13,6 +13,21 @@ export const CONDITIONALS: ConditionalItem[] = [
     name: "Lens",
     description: "Check if user has a lens profile",
   },
+  {
+    id: "lens",
+    name: "Lens",
+    description: "Check if user has a lens profile",
+  },
+  {
+    id: "lens",
+    name: "Lens",
+    description: "Check if user has a lens profile",
+  },
+  {
+    id: "lens",
+    name: "Lens",
+    description: "Check if user has a lens profile",
+  },
 ];
 
 interface Props {
@@ -22,9 +37,7 @@ interface Props {
 export function Conditionals({ currentConditionals }: Props) {
   return (
     <div className="">
-      <Label className="font-semibold">
-        Rules (add rules to the right)
-      </Label>
+      <Label className="font-semibold">Rules (add rules to the right)</Label>
       <div className="space-y-4 p-4 border rounded-lg">
         {CONDITIONALS.map((conditional) => (
           <Conditional
