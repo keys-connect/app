@@ -23,7 +23,7 @@ const metadata = {
 const chains = [mainnet, gnosis, goerli, gnosisChiado, scrollSepolia];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
-createWeb3Modal({ wagmiConfig, projectId, chains });
+createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: "light" });
 
 export function Web3Modal({ children }: { children?: ReactNode }) {
   return <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>;
