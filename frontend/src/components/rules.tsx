@@ -1,5 +1,5 @@
 import { RULES } from "../constants/components";
-import { RuleWithInput } from "./rule-with-inputs";
+import { RuleWithoutInput } from "./rule-without-input";
 import { Label } from "./ui/label";
 
 export interface RuleItem {
@@ -19,7 +19,7 @@ export function Rules({ currentRules }: Props) {
       <Label className="font-semibold">Rules (add rules to the right)</Label>
       <div className="space-y-4 p-4 border rounded-lg">
         {RULES.map((conditional) => (
-          <RuleWithInput
+          <RuleWithoutInput
             key={conditional.name}
             {...conditional}
             currentRules={currentRules}

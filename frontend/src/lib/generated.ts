@@ -78,6 +78,7 @@ export const tokenABI = [
   },
   { type: 'error', inputs: [], name: 'InvalidInitialization' },
   { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [], name: 'OnlyOracle' },
   {
     type: 'error',
     inputs: [{ name: 'owner', internalType: 'address', type: 'address' }],
@@ -245,6 +246,7 @@ export const tokenABI = [
       { name: 'owner', internalType: 'address', type: 'address' },
       { name: '_verifiers', internalType: 'address[]', type: 'address[]' },
       { name: '_parsArray', internalType: 'bytes32[][]', type: 'bytes32[][]' },
+      { name: '_oracle', internalType: 'address', type: 'address' },
     ],
     name: 'init',
     outputs: [],
@@ -263,7 +265,14 @@ export const tokenABI = [
     stateMutability: 'nonpayable',
     type: 'function',
     inputs: [{ name: 'to', internalType: 'address', type: 'address' }],
-    name: 'mint',
+    name: 'mintConditions',
+    outputs: [],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'to', internalType: 'address', type: 'address' }],
+    name: 'mintOracle',
     outputs: [],
   },
   {
@@ -416,6 +425,7 @@ export const tokenFactoryABI = [
       { name: 'owner', internalType: 'address', type: 'address' },
       { name: '_verifiers', internalType: 'address[]', type: 'address[]' },
       { name: '_parsArray', internalType: 'bytes32[][]', type: 'bytes32[][]' },
+      { name: '_oracle', internalType: 'address', type: 'address' },
       { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
     ],
     name: 'create',
@@ -722,23 +732,53 @@ export function useTokenInit<TMode extends WriteContractMode = undefined>(
 }
 
 /**
- * Wraps __{@link useContractWrite}__ with `abi` set to __{@link tokenABI}__ and `functionName` set to `"mint"`.
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link tokenABI}__ and `functionName` set to `"mintConditions"`.
  */
-export function useTokenMint<TMode extends WriteContractMode = undefined>(
+export function useTokenMintConditions<
+  TMode extends WriteContractMode = undefined,
+>(
   config: TMode extends 'prepared'
     ? UseContractWriteConfig<
-        PrepareWriteContractResult<typeof tokenABI, 'mint'>['request']['abi'],
-        'mint',
+        PrepareWriteContractResult<
+          typeof tokenABI,
+          'mintConditions'
+        >['request']['abi'],
+        'mintConditions',
         TMode
-      > & { functionName?: 'mint' }
-    : UseContractWriteConfig<typeof tokenABI, 'mint', TMode> & {
+      > & { functionName?: 'mintConditions' }
+    : UseContractWriteConfig<typeof tokenABI, 'mintConditions', TMode> & {
         abi?: never
-        functionName?: 'mint'
+        functionName?: 'mintConditions'
       } = {} as any,
 ) {
-  return useContractWrite<typeof tokenABI, 'mint', TMode>({
+  return useContractWrite<typeof tokenABI, 'mintConditions', TMode>({
     abi: tokenABI,
-    functionName: 'mint',
+    functionName: 'mintConditions',
+    ...config,
+  } as any)
+}
+
+/**
+ * Wraps __{@link useContractWrite}__ with `abi` set to __{@link tokenABI}__ and `functionName` set to `"mintOracle"`.
+ */
+export function useTokenMintOracle<TMode extends WriteContractMode = undefined>(
+  config: TMode extends 'prepared'
+    ? UseContractWriteConfig<
+        PrepareWriteContractResult<
+          typeof tokenABI,
+          'mintOracle'
+        >['request']['abi'],
+        'mintOracle',
+        TMode
+      > & { functionName?: 'mintOracle' }
+    : UseContractWriteConfig<typeof tokenABI, 'mintOracle', TMode> & {
+        abi?: never
+        functionName?: 'mintOracle'
+      } = {} as any,
+) {
+  return useContractWrite<typeof tokenABI, 'mintOracle', TMode>({
+    abi: tokenABI,
+    functionName: 'mintOracle',
     ...config,
   } as any)
 }
@@ -926,19 +966,35 @@ export function usePrepareTokenInit(
 }
 
 /**
- * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link tokenABI}__ and `functionName` set to `"mint"`.
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link tokenABI}__ and `functionName` set to `"mintConditions"`.
  */
-export function usePrepareTokenMint(
+export function usePrepareTokenMintConditions(
   config: Omit<
-    UsePrepareContractWriteConfig<typeof tokenABI, 'mint'>,
+    UsePrepareContractWriteConfig<typeof tokenABI, 'mintConditions'>,
     'abi' | 'functionName'
   > = {} as any,
 ) {
   return usePrepareContractWrite({
     abi: tokenABI,
-    functionName: 'mint',
+    functionName: 'mintConditions',
     ...config,
-  } as UsePrepareContractWriteConfig<typeof tokenABI, 'mint'>)
+  } as UsePrepareContractWriteConfig<typeof tokenABI, 'mintConditions'>)
+}
+
+/**
+ * Wraps __{@link usePrepareContractWrite}__ with `abi` set to __{@link tokenABI}__ and `functionName` set to `"mintOracle"`.
+ */
+export function usePrepareTokenMintOracle(
+  config: Omit<
+    UsePrepareContractWriteConfig<typeof tokenABI, 'mintOracle'>,
+    'abi' | 'functionName'
+  > = {} as any,
+) {
+  return usePrepareContractWrite({
+    abi: tokenABI,
+    functionName: 'mintOracle',
+    ...config,
+  } as UsePrepareContractWriteConfig<typeof tokenABI, 'mintOracle'>)
 }
 
 /**

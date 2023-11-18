@@ -30,6 +30,7 @@ app.post(`/key`, async (req, res) => {
     contactLink,
     conditionals,
     address,
+    contract,
   } = req.body;
   console.log(req.body);
   const result = await prisma.key.create({
@@ -40,13 +41,13 @@ app.post(`/key`, async (req, res) => {
       description,
       endDate,
       startDate,
-      // @ts-ignore
-      address,
+      address: contract,
       keyRules: {
         create: conditionals.map((conditional: any) => ({
           name: conditional.name,
           title: conditional.title,
           description: conditional.description,
+          parameters: conditional.parameters ?? [],
         })),
       },
     },

@@ -1,23 +1,31 @@
-import {
-  AlertDialog,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ADDRESS } from "@/constants/address";
+import {
+  usePrepareTokenFactoryCreate,
+  useTokenFactoryCreate,
+} from "@/lib/generated";
 import { uploadFile } from "@/lib/lighthouse";
 import { cn } from "@/lib/utils";
-import { FormEventHandler, useRef, useState } from "react";
+import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
+import { pad, toHex } from "viem";
+import { polygonMumbai } from "viem/chains";
+import { useAccount, useWaitForTransaction } from "wagmi";
+import { RULES } from "../constants/components";
 import { Rule } from "./rule";
 import { RuleItem, Rules } from "./rules";
-import { RULES } from "../constants/components";
-import { AlertDialogFooter, AlertDialogHeader } from "./ui/alert-dialog";
-import { useAccount } from "wagmi";
+import { useToast } from "./ui/use-toast";
 
 export function CreateKeyForm() {
   const titleRef = useRef<HTMLInputElement>(null);
@@ -27,18 +35,47 @@ export function CreateKeyForm() {
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const contactLinkRef = useRef<HTMLInputElement>(null);
   const ipfsHashRef = useRef<HTMLInputElement>(null);
-  const { address } = useAccount();
 
-  const [rules, setRules] = useState<RuleItem[]>([]);
+  const { address } = useAccount();
+  const [rules, setRules] = useState<(RuleItem & { parameters?: string[] })[]>(
+    []
+  );
+  const apecoinRule = rules.find((r) => r.name === "apecoin");
+  const { config } = usePrepareTokenFactoryCreate({
+    address: ADDRESS.TokenFactory,
+    chainId: polygonMumbai.id,
+    args: [
+      titleRef.current?.value!,
+      (titleRef.current?.value || "").slice(0, 3).toUpperCase()!,
+      address!,
+      [ADDRESS.TokenFactoryERC20BalanceOf],
+      [
+        [
+          pad(ADDRESS.DummyErc20, { size: 32 }),
+          toHex(+apecoinRule?.parameters?.[0]! || "", { size: 32 }),
+        ],
+      ],
+      ADDRESS.FunctionsConsumer,
+      toHex(titleRef.current?.value || "", { size: 32 }),
+    ],
+    enabled:
+      apecoinRule?.parameters?.[0] !== undefined &&
+      Boolean(titleRef.current?.value),
+  });
+  const { data: writeData, writeAsync } = useTokenFactoryCreate(config);
+  const { data: txReceipt } = useWaitForTransaction({
+    hash: writeData?.hash,
+    chainId: polygonMumbai.id,
+    enabled: writeData !== undefined,
+  });
+  const [keyId, setKeyId] = useState();
+
   const [{ isOver }, drop] = useDrop(
     () => ({
       accept: "RULES",
-      drop: (item) => {
-        const rule = RULES.find(
-          (c) => c.name === (item as { name: string }).name
-        );
+      drop: (item: { id: string }) => {
+        const rule = RULES.find((c) => c.name === item.id);
         const exists = rules.find((c) => c.name === rule?.name);
-        console.log({ rule, rules, exists });
         if (rule && !exists) {
           setRules((prev) => [...prev, rule]);
         } else {
@@ -53,9 +90,15 @@ export function CreateKeyForm() {
   );
 
   const [isOpen, setIsOpen] = useState(false);
+  const { toast } = useToast();
 
-  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (txReceipt) {
+      createKey();
+    }
+  }, [createKey, txReceipt]);
+
+  async function createKey() {
     try {
       let hash: string;
       if (logo) {
@@ -79,11 +122,13 @@ export function CreateKeyForm() {
           description: descriptionRef.current?.value,
           contactLink: contactLinkRef.current?.value,
           address,
-          conditionals: rules.map((conditional) => ({
-            name: conditional.name,
-            title: conditional.title,
-            description: conditional.description,
-            score: conditional.score,
+          contract: writeData?.hash,
+          conditionals: rules.map((rule) => ({
+            name: rule.name,
+            title: rule.title,
+            description: rule.description,
+            score: rule.score,
+            parameters: rule.parameters,
           })),
         }),
       });
@@ -92,10 +137,38 @@ export function CreateKeyForm() {
 
       console.log({ data });
     } catch (e) {
-      console.log(e);
+      toast({
+        title: "Error creating event",
+        description: "Please check the console for more details.",
+        variant: "destructive",
+      });
+      throw e;
     }
+  }
 
-    return "";
+  const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
+    e.preventDefault();
+    console.log({
+      config,
+      rules,
+      enabled: apecoinRule?.parameters?.[0] !== undefined,
+      a: Boolean(titleRef.current?.value),
+      args: [
+        titleRef.current?.value!,
+        (titleRef.current?.value || "").slice(0, 3).toUpperCase()!,
+        address!,
+        [ADDRESS.TokenFactoryERC20BalanceOf],
+        [
+          [
+            pad(ADDRESS.DummyErc20, { size: 32 }),
+            toHex(+apecoinRule?.parameters?.[0]! || "", { size: 32 }),
+          ],
+        ],
+        ADDRESS.FunctionsConsumer,
+        toHex(titleRef.current?.value || "", { size: 32 }),
+      ],
+    });
+    await writeAsync?.();
   };
 
   return (
@@ -104,11 +177,15 @@ export function CreateKeyForm() {
         className="space-y-4 p-4 px-6 rounded-lg shadow border"
         onSubmit={onSubmit}
       >
+        <h1 className="font-bold text-xl">
+          Create your Event or Campaign below!
+        </h1>
         <div>
           <Label className="font-semibold" htmlFor="title">
             Title of Event/Campaign
           </Label>
           <Input
+            required
             aria-required="true"
             className="w-full"
             id="title"
@@ -145,6 +222,7 @@ export function CreateKeyForm() {
               Start Date
             </Label>
             <Input
+              required
               aria-required="true"
               className="w-full"
               id="startDate"
@@ -157,6 +235,7 @@ export function CreateKeyForm() {
               End Date
             </Label>
             <Input
+              required
               aria-required="true"
               className="w-full"
               ref={endDateRef}
@@ -170,6 +249,7 @@ export function CreateKeyForm() {
             Description / Details
           </Label>
           <Textarea
+            required
             aria-required="true"
             ref={descriptionRef}
             className="w-full h-32"
@@ -181,6 +261,7 @@ export function CreateKeyForm() {
             Contact Link
           </Label>
           <Input
+            required
             aria-required="true"
             className="w-full"
             id="contactLink"
@@ -200,7 +281,7 @@ export function CreateKeyForm() {
         <div className="space-y-4 h-full">
           <div
             className={cn(
-              "bg-gray-50 rounded-lg p-4 h-full border-2 border-dashed",
+              "bg-gray-50 rounded-lg p-4 h-full border-2 border-dashed space-y-4",
               isOver && "border-solid border-gray-600"
             )}
             ref={drop}
@@ -217,32 +298,50 @@ export function CreateKeyForm() {
                       prev.filter((c) => c.name !== conditional.name)
                     )
                   }
+                  updateRule={(parameters) => {
+                    setRules((prev) => {
+                      const rule = prev.find(
+                        (c) => c.name === conditional.name
+                      );
+                      if (rule) {
+                        rule.parameters = parameters;
+                      }
+                      return prev;
+                    });
+                  }}
                 />
               ))
             )}
           </div>
         </div>
       </div>
-      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Congratulations!</AlertDialogTitle>
-            <AlertDialogDescription>
-              Your event has been created. Here is a link to share with your
-              followers.
-              <Input
-                type="text"
-                disabled
-                defaultValue={"https://k3ys.xyz/events/id"}
-                className="mt-4 bg-slate-200 text-black"
-              />
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Close</AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Step 1: C</DialogTitle>
+            <DialogDescription>
+              Please confirm your details before proceeding to the next step.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right" htmlFor="name">
+                Name
+              </Label>
+              <Input className="col-span-3" id="name" value="" />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label className="text-right" htmlFor="email">
+                Email
+              </Label>
+              <Input className="col-span-3" id="email" value="" />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="submit">Next</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
