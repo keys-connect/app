@@ -1,6 +1,5 @@
 import EventRules from "@/components/event-rules";
-import { Button } from "@/components/ui/button";
-import { validateRule } from "@/lib/rules";
+import { useValidateRule } from "@/hooks/useValidateRule";
 import { useRouter } from "next/router";
 import { useAccount, useQuery } from "wagmi";
 
@@ -31,6 +30,12 @@ export default function EventPage() {
     enabled: Boolean(id),
   });
   const { address } = useAccount();
+
+  const { data: isValid } = useValidateRule({
+    address,
+    type: "safe",
+    isTestnet: false,
+  });
 
   console.log({ data });
 
@@ -71,23 +76,7 @@ export default function EventPage() {
         />
       </div>
       <EventRules rules={data.event.keyRules} />
-      <div className="flex space-x-4 justify-center pt-12">
-        <Button
-          onClick={async () => {
-            const isValid = await validateRule({
-              address,
-              type: "lens",
-              isTestnet: false,
-            });
-            console.log({ isValid });
-          }}
-        >
-          Check Lens
-        </Button>
-        <Button>Check ENS</Button>
-        <Button>Check Safe</Button>
-        <Button>Check Apecoins</Button>
-      </div>
+      <div className="flex space-x-4 justify-center pt-12"></div>
     </div>
   );
 }

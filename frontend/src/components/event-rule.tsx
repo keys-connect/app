@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { RuleItem } from "./rules";
-import { validateRule } from "@/lib/rules";
+import { useValidateRule } from "../hooks/useValidateRule";
 import { useAccount, useQuery } from "wagmi";
 import { RuleType } from "@/constants/components";
 import { Button } from "./ui/button";
@@ -17,18 +17,11 @@ export function EventRule({ description, name, title, addScore }: Props) {
     data: isSuccessful,
     isLoading,
     refetch,
-  } = useQuery(
-    ["rule", name],
-    () =>
-      validateRule({
-        address: address!,
-        type: name as RuleType,
-        isTestnet: false,
-      }),
-    {
-      enabled: Boolean(address),
-    }
-  );
+  } = useValidateRule({
+    address: address!,
+    type: name as RuleType,
+    isTestnet: false,
+  });
 
   const [hasAdded, setHasAdded] = useState(false);
 
