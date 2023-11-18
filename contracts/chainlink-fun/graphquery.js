@@ -14,7 +14,7 @@ const graphRequest = Functions.makeHttpRequest({
       "variables": {
         "address":"${address}"},
         "query": "query LensProfiles($address: EvmAddress!) {
-          profiles(request: {where: {ownedBy: [$address]}}) {
+          profiles( request: { where: { ownedBy: [$address]}}) {
             items {
               id
               createdAt
