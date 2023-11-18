@@ -12,7 +12,7 @@ task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) =
   const ethers = hre.ethers;
 
   const networkName = 'polygonMumbai';
-  const contractAddr = '0xB21ea083d9f17D5c9E47A99c1520F65368D8df62';
+  const contractAddr = '0x2b18D3657f4B4129B36D74BCF5B2889C91fBa252';
   const subscriptionId = 825;
   const slotId = 0;
   const callbackGasLimit = 250_000;
