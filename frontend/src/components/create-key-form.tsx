@@ -7,6 +7,15 @@ import { CONDITIONALS, ConditionalItem, Conditionals } from "./conditionals";
 import { Conditional } from "./conditional";
 import { cn } from "@/lib/utils";
 import { useDrop } from "react-dnd";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { AlertDialogHeader, AlertDialogFooter } from "./ui/alert-dialog";
 
 export function CreateKeyForm() {
   const titleRef = useRef<HTMLInputElement>(null);
@@ -15,6 +24,7 @@ export function CreateKeyForm() {
   const endDateRef = useRef<HTMLInputElement>(null);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
   const contactLinkRef = useRef<HTMLInputElement>(null);
+
   const [conditionals, setConditionals] = useState<ConditionalItem[]>([]);
   const [{ isOver }, drop] = useDrop(
     () => ({
@@ -37,6 +47,9 @@ export function CreateKeyForm() {
     }),
     [conditionals]
   );
+
+  const [isOpen, setIsOpen] = useState(false);
+
   const onSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     console.log(
@@ -47,6 +60,8 @@ export function CreateKeyForm() {
       descriptionRef.current?.value,
       contactLinkRef.current?.value
     );
+
+    setIsOpen(true);
   };
 
   return (
@@ -163,6 +178,26 @@ export function CreateKeyForm() {
           </div>
         </div>
       </div>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Congratulations!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your event has been created. Here is a link to share with your
+              followers.
+              <Input
+                type="text"
+                disabled
+                defaultValue={"https://k3ys.xyz/events/id"}
+                className="mt-4 bg-slate-200 text-black"
+              />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }
