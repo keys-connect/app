@@ -1,21 +1,16 @@
 import { cn } from "@/lib/utils";
 import { useDrag } from "react-dnd";
-import { ConditionalItem } from "./conditionals";
+import { RuleItem } from "./rules";
 
-interface Props extends ConditionalItem {
-  currentConditionals: ConditionalItem[];
+interface Props extends RuleItem {
+  currentRules: RuleItem[];
 }
 
-export function Conditional({
-  id,
-  name,
-  description,
-  currentConditionals,
-}: Props) {
-  const isDraggable = !currentConditionals.find((c) => c.id === id);
+export function RuleWithInput({ id, name, description, currentRules }: Props) {
+  const isDraggable = !currentRules.find((c) => c.id === id);
   const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: "CONDITIONAL",
+      type: "RULES",
       item: { id },
       collect: (monitor) => ({
         isDragging: !!monitor.isDragging(),

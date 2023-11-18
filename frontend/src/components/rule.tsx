@@ -1,21 +1,16 @@
 import { cn } from "@/lib/utils";
 import { useDrag } from "react-dnd";
-import { ConditionalItem } from "./conditionals";
+import { RuleItem } from "./rules";
 import { TrashIcon } from "lucide-react";
 import { Button } from "./ui/button";
 
-interface Props extends ConditionalItem {
-  removeConditional: () => void;
+interface Props extends RuleItem {
+  removeRule: () => void;
 }
 
-export function Conditional({
-  id,
-  name,
-  description,
-  removeConditional,
-}: Props) {
+export function Rule({ id, name, description, removeRule }: Props) {
   const [{ isDragging }, drag] = useDrag(() => ({
-    type: "CONDITIONAL",
+    type: "RULES",
     item: { id },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
@@ -55,7 +50,7 @@ export function Conditional({
         <Button
           variant={"outline"}
           className="px-2"
-          onClick={() => removeConditional()}
+          onClick={() => removeRule()}
         >
           <TrashIcon className="w-6 h-6" />
         </Button>

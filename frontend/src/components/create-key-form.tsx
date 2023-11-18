@@ -13,8 +13,9 @@ import { uploadFile } from "@/lib/lighthouse";
 import { cn } from "@/lib/utils";
 import { FormEventHandler, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
-import { Conditional } from "./conditional";
-import { CONDITIONALS, ConditionalItem, Conditionals } from "./conditionals";
+import { Rule } from "./rule";
+import { RuleItem, Rules } from "./rules";
+import { RULES } from "../constants/components";
 import { AlertDialogFooter, AlertDialogHeader } from "./ui/alert-dialog";
 import { useAccount } from "wagmi";
 
@@ -28,27 +29,25 @@ export function CreateKeyForm() {
   const ipfsHashRef = useRef<HTMLInputElement>(null);
   const { address } = useAccount();
 
-  const [conditionals, setConditionals] = useState<ConditionalItem[]>([]);
+  const [rules, setRules] = useState<RuleItem[]>([]);
   const [{ isOver }, drop] = useDrop(
     () => ({
-      accept: "CONDITIONAL",
+      accept: "RULES",
       drop: (item) => {
-        const conditional = CONDITIONALS.find(
-          (c) => c.id === (item as { id: string }).id
-        );
-        const exists = conditionals.find((c) => c.id === conditional?.id);
-        console.log({ conditional, conditionals, exists });
-        if (conditional && !exists) {
-          setConditionals((prev) => [...prev, conditional]);
+        const rule = RULES.find((c) => c.id === (item as { id: string }).id);
+        const exists = rules.find((c) => c.id === rule?.id);
+        console.log({ rule, rules, exists });
+        if (rule && !exists) {
+          setRules((prev) => [...prev, rule]);
         } else {
-          console.log("Did not add conditional", conditional, item, exists);
+          console.log("Did not add rule", rule, item, exists);
         }
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
     }),
-    [conditionals]
+    [rules]
   );
 
   const [isOpen, setIsOpen] = useState(false);
@@ -78,7 +77,7 @@ export function CreateKeyForm() {
           description: descriptionRef.current?.value,
           contactLink: contactLinkRef.current?.value,
           address,
-          conditionals: conditionals.map((conditional) => ({
+          conditionals: rules.map((conditional) => ({
             id: conditional.id,
           })),
         }),
@@ -185,7 +184,7 @@ export function CreateKeyForm() {
             type="link"
           />
         </div>
-        <Conditionals currentConditionals={conditionals} />
+        <Rules currentRules={rules} />
         <div>
           <Button className="w-full" type="submit">
             Create Event/Campaign
@@ -201,15 +200,15 @@ export function CreateKeyForm() {
             )}
             ref={drop}
           >
-            {conditionals.length === 0 ? (
+            {rules.length === 0 ? (
               <span className="text-sm text-gray-500">Drag rules here...</span>
             ) : (
-              conditionals.map((conditional) => (
-                <Conditional
+              rules.map((conditional) => (
+                <Rule
                   key={conditional.id}
                   {...conditional}
-                  removeConditional={() =>
-                    setConditionals((prev) =>
+                  removeRule={() =>
+                    setRules((prev) =>
                       prev.filter((c) => c.id !== conditional.id)
                     )
                   }
