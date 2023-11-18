@@ -65,6 +65,18 @@ app.post(`/key`, async (req, res) => {
   res.json(result);
 });
 
+app.get("/events/:id", async (req, res) => {
+  const { id } = req.params;
+
+  const event = await prisma.key.findFirst({
+    where: { id: +id },
+    include: {
+      keyRules: true,
+    },
+  });
+  return res.status(200).json({ event });
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () =>
