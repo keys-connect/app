@@ -1,4 +1,5 @@
 import { Conditional } from "./conditional-with-inputs";
+import { Label } from "./ui/label";
 
 export interface ConditionalItem {
   id: string;
@@ -20,9 +21,11 @@ interface Props {
 
 export function Conditionals({ currentConditionals }: Props) {
   return (
-    <div className="bg-white rounded-lg shadow p-4">
-      <h2 className="font-semibold text-lg mb-4">Conditionals</h2>
-      <div className="space-y-4">
+    <div className="">
+      <Label className="font-semibold">
+        Rules (add rules to the right)
+      </Label>
+      <div className="space-y-4 p-4 border rounded-lg">
         {CONDITIONALS.map((conditional) => (
           <Conditional
             key={conditional.id}
