@@ -15,7 +15,7 @@ export const fontSans = FontSans({
 export function Layout({ children, showNetworkButtons }: Props) {
   return (
     <div className={cn("w-screen h-screen", fontSans.variable)}>
-      <NavBar showNetworkButtons={showNetworkButtons} />
+      <NavBar hideNetworkButtons={showNetworkButtons} />
       <div className="max-w-7xl mx-auto">{children}</div>
     </div>
   );
