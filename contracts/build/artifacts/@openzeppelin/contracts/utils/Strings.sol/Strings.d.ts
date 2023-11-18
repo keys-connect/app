@@ -37,24 +37,11 @@ export interface Strings$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
-    contractName: "Strings",
-    constructorArgs?: [],
-    config?: DeployContractConfig
-  ): Promise<GetContractReturnType<Strings$Type["abi"]>>;
-  export function deployContract(
     contractName: "@openzeppelin/contracts/utils/Strings.sol:Strings",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<Strings$Type["abi"]>>;
 
-  export function sendDeploymentTransaction(
-    contractName: "Strings",
-    constructorArgs?: [],
-    config?: SendDeploymentTransactionConfig
-  ): Promise<{
-    contract: GetContractReturnType<Strings$Type["abi"]>;
-    deploymentTransaction: GetTransactionReturnType;
-  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/utils/Strings.sol:Strings",
     constructorArgs?: [],
@@ -64,11 +51,6 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
-  export function getContractAt(
-    contractName: "Strings",
-    address: Address,
-    config?: GetContractAtConfig
-  ): Promise<GetContractReturnType<Strings$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/utils/Strings.sol:Strings",
     address: Address,
