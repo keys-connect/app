@@ -23,6 +23,7 @@ task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) =
   const { responseBytesHexstring, errorString } = await simulateScript(requestConfig);
   console.log({ responseBytesHexstring, errorString });
 
+  // signer needs to be connected to mumbai
   const signers = await ethers.getSigners();
   const signer = signers[0];
 
@@ -30,4 +31,9 @@ task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) =
   const functionsRouterAddress = networks[networkName]['functionsRouter'];
   const subManager = new SubscriptionManager({ signer: signer as any, linkTokenAddress, functionsRouterAddress });
   await subManager.initialize();
+
+  const subInfo = await subManager.getSubscriptionInfo(subscriptionId);
+  if (!subInfo.consumers.map((c) => c.toLowerCase()).includes(contractAddr.toLowerCase())) {
+    throw Error(`Consumer contract ${contractAddr} has not been added to subscription ${subscriptionId}`);
+  }
 });

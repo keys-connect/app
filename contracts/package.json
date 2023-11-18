@@ -13,6 +13,7 @@
     "generate": "wagmi generate",
     "deploy": "npx hardhat ignition deploy ignition/modules/TokenFactory.ts",
     "export": "./export.generated.sh",
+    "request-mint": "npx hardhat request-mint --network mumbai",
     "verify": "hardhat etherscan-verify",
     "lint": "eslint --config ./.eslintrc --ignore-path ./.eslintignore ./deploy/**/*.ts ./scripts/**/*.ts ./test/**/*.ts ./helpers/**/*.ts",
     "solhint": "solhint ./contracts/**/*.sol",
