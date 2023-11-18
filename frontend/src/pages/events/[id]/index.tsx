@@ -43,7 +43,7 @@ export default function EventPage() {
     return null;
   }
 
-  if (!data) {
+  if (!data || !data.event) {
     return (
       <div>
         <h1>No event found.</h1>

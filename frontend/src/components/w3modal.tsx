@@ -1,15 +1,16 @@
 import { createWeb3Modal, defaultWagmiConfig } from "@web3modal/wagmi/react";
 
-import { WagmiConfig } from "wagmi";
+import { ReactNode } from "react";
 import {
-  arbitrum,
   gnosis,
   gnosisChiado,
   goerli,
   mainnet,
-  scrollSepolia,
+  polygon,
+  polygonMumbai,
+  scrollSepolia
 } from "viem/chains";
-import { ReactNode } from "react";
+import { WagmiConfig } from "wagmi";
 
 const projectId = process.env.WALLET_CONNECT_PROJECT_ID!;
 
@@ -20,7 +21,15 @@ const metadata = {
   icons: ["https://k3ys.xyz/logo.png"],
 };
 
-const chains = [mainnet, gnosis, goerli, gnosisChiado, scrollSepolia];
+const chains = [
+  mainnet,
+  gnosis,
+  goerli,
+  gnosisChiado,
+  scrollSepolia,
+  polygonMumbai,
+  polygon,
+];
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
 createWeb3Modal({ wagmiConfig, projectId, chains, themeMode: "light" });
