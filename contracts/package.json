@@ -28,6 +28,7 @@
     "@eth-optimism/hardhat-ovm": "^0.2.4",
     "@ethereum-waffle/ens": "^3.3.1",
     "@ethereumjs/vm": "^5.7.1",
+    "@nomicfoundation/hardhat-ethers": "^3.0.5",
     "@nomicfoundation/hardhat-viem": "^1.0.0",
     "@openzeppelin/contracts": "^5.0.0",
     "@tenderly/hardhat-tenderly": "^1.0.13",
@@ -42,7 +43,6 @@
     "web-streams-polyfill": "^3.2.1"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.4",
     "@nomicfoundation/hardhat-ignition": "^0.11.2",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^9.1.0",

@@ -10,6 +10,16 @@
       "args": ["test"],
       "cwd": "${workspaceFolder}/contracts",
       "console": "integratedTerminal"
+    },
+    {
+      "name": "hardhat request-mint",
+      "type": "node",
+      "request": "launch",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeExecutable": "${workspaceFolder}/contracts/node_modules/.bin/hardhat",
+      "args": ["request-mint"],
+      "cwd": "${workspaceFolder}/contracts",
+      "console": "integratedTerminal"
     }
   ]
 }
