@@ -49,16 +49,8 @@ contract Token is ERC721URIStorageCustom, Initializable, Ownable {
     }
 
     function mint(address to) public {
-        console.log('to: %s', to);
         for(uint8 ix=0; ix < conditions.length; ix++) {
             Condition memory condition = conditions[ix];
-
-            console.log('condition.verifier: %s', condition.verifier);
-            console.log('condition.pars[0]:');
-            console.logBytes32(condition.pars[0]);
-            console.log('condition.pars[1]:');
-            console.logBytes32(condition.pars[1]);
-
             bool res = IVerifier(condition.verifier).verify(to, condition.pars);
             
             if (!res) revert ConditionNotMet(to,condition.verifier, condition.pars);

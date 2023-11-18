@@ -62,9 +62,9 @@ describe('Token', () => {
     factory = await deployTokenFactory(master.address, deployer);
     erc20Verifier = await deployVerifier('ERC20BalanceOf', deployer);
 
-    console.log('factory address', factory.address);
-    console.log('testERC20Token address', testERC20Token.address);
-    console.log('erc20Verifier address', erc20Verifier.address);
+    // console.log('factory address', factory.address);
+    // console.log('testERC20Token address', testERC20Token.address);
+    // console.log('erc20Verifier address', erc20Verifier.address);
   });
 
   it('was deployed with founders', async () => {
@@ -84,8 +84,6 @@ describe('Token', () => {
   });
 
   it('mints an NFT to a valid account', async () => {
-    console.log('u1 address', u1.s.account.address);
-
     const hash = await keyContractRead.write.mint([u1.s.account.address]);
     const client = await viem.getPublicClient();
     const receipt = await client.waitForTransactionReceipt({ hash });
@@ -94,15 +92,9 @@ describe('Token', () => {
     expect(events).to.have.length;
   });
 
-  // it('wont mint an NFT to a non valid account', async () => {
-  //   console.log('u1 address', u1.s.account.address);
-
-  //   await shouldFail
-  //   const hash = await keyContractRead.write.mint([u2.s.account.address]);
-  //   const client = await viem.getPublicClient();
-  //   const receipt = await client.waitForTransactionReceipt({ hash });
-  //   const events = await getContractEventsFromReceipt('Token', receipt);
-
-  //   expect(events).to.have.length;
-  // });
+  it('wont mint an NFT to a non valid account', async () => {
+    await shouldFail(async () => {
+      await keyContractRead.write.mint([u2.s.account.address]);
+    }, 'BalanceNotEnough');
+  });
 });
