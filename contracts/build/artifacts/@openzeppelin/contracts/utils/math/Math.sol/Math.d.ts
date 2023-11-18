@@ -26,24 +26,11 @@ export interface Math$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
-    contractName: "Math",
-    constructorArgs?: [],
-    config?: DeployContractConfig
-  ): Promise<GetContractReturnType<Math$Type["abi"]>>;
-  export function deployContract(
     contractName: "@openzeppelin/contracts/utils/math/Math.sol:Math",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<Math$Type["abi"]>>;
 
-  export function sendDeploymentTransaction(
-    contractName: "Math",
-    constructorArgs?: [],
-    config?: SendDeploymentTransactionConfig
-  ): Promise<{
-    contract: GetContractReturnType<Math$Type["abi"]>;
-    deploymentTransaction: GetTransactionReturnType;
-  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/utils/math/Math.sol:Math",
     constructorArgs?: [],
@@ -53,11 +40,6 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
-  export function getContractAt(
-    contractName: "Math",
-    address: Address,
-    config?: GetContractAtConfig
-  ): Promise<GetContractReturnType<Math$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/utils/math/Math.sol:Math",
     address: Address,

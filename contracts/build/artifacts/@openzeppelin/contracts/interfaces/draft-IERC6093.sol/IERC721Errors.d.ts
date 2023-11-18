@@ -124,24 +124,11 @@ export interface IERC721Errors$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
-    contractName: "IERC721Errors",
-    constructorArgs?: [],
-    config?: DeployContractConfig
-  ): Promise<GetContractReturnType<IERC721Errors$Type["abi"]>>;
-  export function deployContract(
     contractName: "@openzeppelin/contracts/interfaces/draft-IERC6093.sol:IERC721Errors",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<IERC721Errors$Type["abi"]>>;
 
-  export function sendDeploymentTransaction(
-    contractName: "IERC721Errors",
-    constructorArgs?: [],
-    config?: SendDeploymentTransactionConfig
-  ): Promise<{
-    contract: GetContractReturnType<IERC721Errors$Type["abi"]>;
-    deploymentTransaction: GetTransactionReturnType;
-  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/interfaces/draft-IERC6093.sol:IERC721Errors",
     constructorArgs?: [],
@@ -151,11 +138,6 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
-  export function getContractAt(
-    contractName: "IERC721Errors",
-    address: Address,
-    config?: GetContractAtConfig
-  ): Promise<GetContractReturnType<IERC721Errors$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/interfaces/draft-IERC6093.sol:IERC721Errors",
     address: Address,
