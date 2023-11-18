@@ -6,8 +6,13 @@ interface Props extends RuleItem {
   currentRules: RuleItem[];
 }
 
-export function RuleWithInput({ id, name, description, currentRules }: Props) {
-  const isDraggable = !currentRules.find((c) => c.id === id);
+export function RuleWithInput({
+  name: id,
+  title: name,
+  description,
+  currentRules,
+}: Props) {
+  const isDraggable = !currentRules.find((c) => c.name === id);
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: "RULES",

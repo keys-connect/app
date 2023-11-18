@@ -34,8 +34,10 @@ export function CreateKeyForm() {
     () => ({
       accept: "RULES",
       drop: (item) => {
-        const rule = RULES.find((c) => c.id === (item as { id: string }).id);
-        const exists = rules.find((c) => c.id === rule?.id);
+        const rule = RULES.find(
+          (c) => c.name === (item as { name: string }).name
+        );
+        const exists = rules.find((c) => c.name === rule?.name);
         console.log({ rule, rules, exists });
         if (rule && !exists) {
           setRules((prev) => [...prev, rule]);
@@ -78,7 +80,10 @@ export function CreateKeyForm() {
           contactLink: contactLinkRef.current?.value,
           address,
           conditionals: rules.map((conditional) => ({
-            id: conditional.id,
+            name: conditional.name,
+            title: conditional.title,
+            description: conditional.description,
+            score: conditional.score,
           })),
         }),
       });
@@ -205,11 +210,11 @@ export function CreateKeyForm() {
             ) : (
               rules.map((conditional) => (
                 <Rule
-                  key={conditional.id}
+                  key={conditional.name}
                   {...conditional}
                   removeRule={() =>
                     setRules((prev) =>
-                      prev.filter((c) => c.id !== conditional.id)
+                      prev.filter((c) => c.name !== conditional.name)
                     )
                   }
                 />

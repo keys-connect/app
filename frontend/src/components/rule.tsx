@@ -8,7 +8,12 @@ interface Props extends RuleItem {
   removeRule: () => void;
 }
 
-export function Rule({ id, name, description, removeRule }: Props) {
+export function Rule({
+  name: id,
+  title: name,
+  description,
+  removeRule,
+}: Props) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "RULES",
     item: { id },

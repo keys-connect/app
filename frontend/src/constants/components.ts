@@ -1,24 +1,24 @@
 export const RULES = [
   {
-    id: "lens",
-    name: "Lens",
+    name: "lens",
+    title: "Lens",
     description: "Check if user has a lens profile",
   },
   {
-    id: "ens",
-    name: "ENS",
+    name: "ens",
+    title: "ENS",
     description: "Check if user has a ENS domain",
   },
   {
-    id: "safe",
-    name: "Safe",
+    name: "safe",
+    title: "Safe",
     description: "Check if user has a safe account",
   },
   {
-    id: "apecoin",
-    name: "Apecoin DAO",
+    name: "apecoin",
+    title: "Apecoin DAO",
     description: "Check amount of APECOINs a user has",
   },
 ] as const;
 
-export type RuleType = (typeof RULES)[number]["id"];
+export type RuleType = (typeof RULES)[number]["name"];

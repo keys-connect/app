@@ -3,9 +3,10 @@ import { RuleWithInput } from "./rule-with-inputs";
 import { Label } from "./ui/label";
 
 export interface RuleItem {
-  id: string;
   name: string;
+  title: string;
   description: string;
+  score?: number;
 }
 
 interface Props {
@@ -19,7 +20,7 @@ export function Rules({ currentRules }: Props) {
       <div className="space-y-4 p-4 border rounded-lg">
         {RULES.map((conditional) => (
           <RuleWithInput
-            key={conditional.id}
+            key={conditional.name}
             {...conditional}
             currentRules={currentRules}
           />

@@ -44,7 +44,9 @@ app.post(`/key`, async (req, res) => {
       address,
       keyRules: {
         create: conditionals.map((conditional: any) => ({
-          name: conditional.id,
+          name: conditional.name,
+          title: conditional.title,
+          description: conditional.description,
         })),
       },
     },
