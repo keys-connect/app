@@ -18,6 +18,8 @@ import * as fs from 'fs';
 
 import { HardhatUserConfig } from 'hardhat/config';
 
+import './tasks/request.mint';
+
 import { config as envConfig } from 'dotenv';
 envConfig({ path: './.env' });
 
@@ -123,4 +125,5 @@ const config: HardhatUserConfig = {
     timeout: 3600000, // 1 hourd debugging :'(
   },
 };
+
 export default config;
