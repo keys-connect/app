@@ -19,6 +19,27 @@ export const erc165ABI = [
 ] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ERC20BalanceOf
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const erc20BalanceOfABI = [
+  { stateMutability: 'nonpayable', type: 'constructor', inputs: [] },
+  { type: 'error', inputs: [{ name: 'who', internalType: 'address', type: 'address' }], name: 'BalanceNotEnough' },
+  { type: 'error', inputs: [], name: 'WrongNumberOfParameters' },
+  { type: 'event', anonymous: false, inputs: [{ name: 'adr', internalType: 'address', type: 'address', indexed: true }], name: 'Verified' },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'who', internalType: 'address', type: 'address' },
+      { name: 'pars', internalType: 'bytes32[]', type: 'bytes32[]' },
+    ],
+    name: 'verify',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ERC721Custom
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -397,6 +418,82 @@ export const ierc165ABI = [
     type: 'function',
     inputs: [{ name: 'interfaceId', internalType: 'bytes4', type: 'bytes4' }],
     name: 'supportsInterface',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IERC20
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const ierc20ABI = [
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'owner', internalType: 'address', type: 'address', indexed: true },
+      { name: 'spender', internalType: 'address', type: 'address', indexed: true },
+      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+    ],
+    name: 'Approval',
+  },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address', indexed: true },
+      { name: 'to', internalType: 'address', type: 'address', indexed: true },
+      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false },
+    ],
+    name: 'Transfer',
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [
+      { name: 'owner', internalType: 'address', type: 'address' },
+      { name: 'spender', internalType: 'address', type: 'address' },
+    ],
+    name: 'allowance',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'spender', internalType: 'address', type: 'address' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'approve',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
+    name: 'balanceOf',
+    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
+  },
+  { stateMutability: 'view', type: 'function', inputs: [], name: 'totalSupply', outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'transfer',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'from', internalType: 'address', type: 'address' },
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'value', internalType: 'uint256', type: 'uint256' },
+    ],
+    name: 'transferFrom',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
   },
 ] as const
@@ -886,6 +983,25 @@ export const ierc721ReceiverABI = [
 ] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// IVerifier
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const iVerifierABI = [
+  { type: 'error', inputs: [], name: 'WrongNumberOfParameters' },
+  { type: 'event', anonymous: false, inputs: [{ name: 'adr', internalType: 'address', type: 'address', indexed: true }], name: 'Verified' },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'adr', internalType: 'address', type: 'address' },
+      { name: 'pars', internalType: 'bytes32[]', type: 'bytes32[]' },
+    ],
+    name: 'verify',
+    outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
+  },
+] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Initializable
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -900,6 +1016,33 @@ export const initializableABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const mathABI = [{ type: 'error', inputs: [], name: 'MathOverflowedMulDiv' }] as const
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ownable
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+export const ownableABI = [
+  { type: 'error', inputs: [{ name: 'owner', internalType: 'address', type: 'address' }], name: 'OwnableInvalidOwner' },
+  { type: 'error', inputs: [{ name: 'account', internalType: 'address', type: 'address' }], name: 'OwnableUnauthorizedAccount' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'previousOwner', internalType: 'address', type: 'address', indexed: true },
+      { name: 'newOwner', internalType: 'address', type: 'address', indexed: true },
+    ],
+    name: 'OwnershipTransferred',
+  },
+  { stateMutability: 'view', type: 'function', inputs: [], name: 'owner', outputs: [{ name: '', internalType: 'address', type: 'address' }] },
+  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'renounceOwnership', outputs: [] },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+  },
+] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Strings
@@ -921,13 +1064,15 @@ export const stringsABI = [
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export const tokenABI = [
+  { stateMutability: 'nonpayable', type: 'constructor', inputs: [] },
   {
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    type: 'error',
     inputs: [
-      { name: 'name_', internalType: 'string', type: 'string' },
-      { name: 'symbol_', internalType: 'string', type: 'string' },
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'verfier', internalType: 'address', type: 'address' },
+      { name: 'pars', internalType: 'bytes32[]', type: 'bytes32[]' },
     ],
+    name: 'ConditionNotMet',
   },
   {
     type: 'error',
@@ -954,6 +1099,8 @@ export const tokenABI = [
   { type: 'error', inputs: [{ name: 'tokenId', internalType: 'uint256', type: 'uint256' }], name: 'ERC721NonexistentToken' },
   { type: 'error', inputs: [], name: 'InvalidInitialization' },
   { type: 'error', inputs: [], name: 'NotInitializing' },
+  { type: 'error', inputs: [{ name: 'owner', internalType: 'address', type: 'address' }], name: 'OwnableInvalidOwner' },
+  { type: 'error', inputs: [{ name: 'account', internalType: 'address', type: 'address' }], name: 'OwnableUnauthorizedAccount' },
   {
     type: 'event',
     anonymous: false,
@@ -985,6 +1132,15 @@ export const tokenABI = [
   },
   { type: 'event', anonymous: false, inputs: [{ name: 'version', internalType: 'uint64', type: 'uint64', indexed: false }], name: 'Initialized' },
   { type: 'event', anonymous: false, inputs: [{ name: '_tokenId', internalType: 'uint256', type: 'uint256', indexed: false }], name: 'MetadataUpdate' },
+  {
+    type: 'event',
+    anonymous: false,
+    inputs: [
+      { name: 'previousOwner', internalType: 'address', type: 'address', indexed: true },
+      { name: 'newOwner', internalType: 'address', type: 'address', indexed: true },
+    ],
+    name: 'OwnershipTransferred',
+  },
   {
     type: 'event',
     anonymous: false,
@@ -1025,6 +1181,9 @@ export const tokenABI = [
     inputs: [
       { name: '__name', internalType: 'string', type: 'string' },
       { name: '__symbol', internalType: 'string', type: 'string' },
+      { name: 'owner', internalType: 'address', type: 'address' },
+      { name: '_verifiers', internalType: 'address[]', type: 'address[]' },
+      { name: '_parsArray', internalType: 'bytes32[][]', type: 'bytes32[][]' },
     ],
     name: 'init',
     outputs: [],
@@ -1039,7 +1198,18 @@ export const tokenABI = [
     name: 'isApprovedForAll',
     outputs: [{ name: '', internalType: 'bool', type: 'bool' }],
   },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [
+      { name: 'to', internalType: 'address', type: 'address' },
+      { name: 'data', internalType: 'bytes', type: 'bytes' },
+    ],
+    name: 'mint',
+    outputs: [],
+  },
   { stateMutability: 'view', type: 'function', inputs: [], name: 'name', outputs: [{ name: '', internalType: 'string', type: 'string' }] },
+  { stateMutability: 'view', type: 'function', inputs: [], name: 'owner', outputs: [{ name: '', internalType: 'address', type: 'address' }] },
   {
     stateMutability: 'view',
     type: 'function',
@@ -1047,6 +1217,7 @@ export const tokenABI = [
     name: 'ownerOf',
     outputs: [{ name: '', internalType: 'address', type: 'address' }],
   },
+  { stateMutability: 'nonpayable', type: 'function', inputs: [], name: 'renounceOwnership', outputs: [] },
   {
     stateMutability: 'nonpayable',
     type: 'function',
@@ -1106,6 +1277,13 @@ export const tokenABI = [
     name: 'transferFrom',
     outputs: [],
   },
+  {
+    stateMutability: 'nonpayable',
+    type: 'function',
+    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
+    name: 'transferOwnership',
+    outputs: [],
+  },
 ] as const
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1137,6 +1315,9 @@ export const tokenFactoryABI = [
     inputs: [
       { name: '__name', internalType: 'string', type: 'string' },
       { name: '__symbol', internalType: 'string', type: 'string' },
+      { name: 'owner', internalType: 'address', type: 'address' },
+      { name: '_verifiers', internalType: 'address[]', type: 'address[]' },
+      { name: '_parsArray', internalType: 'bytes32[][]', type: 'bytes32[][]' },
       { name: 'salt', internalType: 'bytes32', type: 'bytes32' },
     ],
     name: 'create',

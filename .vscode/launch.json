@@ -6,9 +6,9 @@
       "type": "node",
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/hardhat",
-      "args": ["test", "--network", "localhost"],
-      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/contracts/node_modules/.bin/hardhat",
+      "args": ["test"],
+      "cwd": "${workspaceFolder}/contracts",
       "console": "integratedTerminal"
     }
   ]
