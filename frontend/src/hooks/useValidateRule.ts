@@ -1,5 +1,5 @@
 import { RuleType } from "@/constants/rules";
-import { Address, mainnet, useEnsName, useQuery } from "wagmi";
+import { Address, mainnet, useEnsAvatar, useEnsName, useQuery } from "wagmi";
 
 type Parameter = {
   type: RuleType;
@@ -55,6 +55,22 @@ export function useValidateRule({ address, type, isTestnet }: Parameter) {
     chainId: mainnet.id,
     enabled: type === "ens" && Boolean(address),
   });
+  const {
+    data: ensAvatar,
+    isLoading: isEnsAvatarLoading,
+    refetch: refetchEnsAvatar,
+  } = useEnsAvatar({
+    name: ensName,
+    chainId: mainnet.id,
+    enabled: type === "ens-with-avatar" && Boolean(address),
+  });
+  if (type === "ens-with-avatar") {
+    return {
+      data: Boolean(ensAvatar),
+      isLoading: isEnsAvatarLoading,
+      refetch: refetchEnsAvatar,
+    };
+  }
   if (type === "ens") {
     return {
       data: Boolean(ensName),

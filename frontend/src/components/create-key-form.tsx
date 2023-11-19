@@ -68,9 +68,6 @@ export function CreateKeyForm() {
     writeAsync,
     isLoading,
   } = useTokenFactoryCreate(config);
-  writeData = {
-    hash: "0x6a8e397685af27b5d1ef3b7fa48ecdcd4cea6e8e7c75ec1817303db5358216c3",
-  };
   const { data: txReceipt } = useWaitForTransaction({
     hash: writeData?.hash,
     chainId: chain?.id,
@@ -150,14 +147,19 @@ export function CreateKeyForm() {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    await writeAsync?.();
+    if (writeAsync) {
+      await writeAsync();
 
-    toast({
-      title: "Event created!",
-      description:
-        "Please wait for the transaction to complete. Hash: " + writeData?.hash,
-    });
+      toast({
+        title: "Event created!",
+        description:
+          "Please wait for the transaction to complete. Hash: " +
+          writeData?.hash,
+      });
+    }
   };
+
+  console.log({ txReceipt, keyId });
 
   useEffect(() => {
     if (txReceipt?.contractAddress && !keyId) {

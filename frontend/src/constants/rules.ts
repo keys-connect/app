@@ -10,6 +10,11 @@ export const RULES = [
     description: "Check if user has a ENS domain",
   },
   {
+    name: "ens-with-avatar",
+    title: "ENS",
+    description: "Check if user has a ENS domain + avatar",
+  },
+  {
     name: "safe",
     title: "Safe",
     description: "Check if user has a safe account",

@@ -22,10 +22,6 @@ const metadata = {
   icons: ["https://k3ys.xyz/logo.png"],
 };
 
-const provider = alchemyProvider({
-  apiKey: process.env.ALCHEMY_API_KEY!,
-});
-
 const { chains } = configureChains(
   [
     mainnet,
@@ -36,7 +32,12 @@ const { chains } = configureChains(
     polygonMumbai,
     polygon,
   ],
-  [publicProvider()]
+  [
+    alchemyProvider({
+      apiKey: process.env.ALCHEMY_API_KEY!,
+    }),
+    publicProvider(),
+  ]
 );
 const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
 
