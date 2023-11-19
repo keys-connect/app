@@ -107,11 +107,24 @@ export interface IERC20Errors$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
+    contractName: "IERC20Errors",
+    constructorArgs?: [],
+    config?: DeployContractConfig
+  ): Promise<GetContractReturnType<IERC20Errors$Type["abi"]>>;
+  export function deployContract(
     contractName: "@openzeppelin/contracts/interfaces/draft-IERC6093.sol:IERC20Errors",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<IERC20Errors$Type["abi"]>>;
 
+  export function sendDeploymentTransaction(
+    contractName: "IERC20Errors",
+    constructorArgs?: [],
+    config?: SendDeploymentTransactionConfig
+  ): Promise<{
+    contract: GetContractReturnType<IERC20Errors$Type["abi"]>;
+    deploymentTransaction: GetTransactionReturnType;
+  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/interfaces/draft-IERC6093.sol:IERC20Errors",
     constructorArgs?: [],
@@ -121,6 +134,11 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
+  export function getContractAt(
+    contractName: "IERC20Errors",
+    address: Address,
+    config?: GetContractAtConfig
+  ): Promise<GetContractReturnType<IERC20Errors$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/interfaces/draft-IERC6093.sol:IERC20Errors",
     address: Address,

@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@atixlabs/hardhat-time-n-mine": "^0.0.5",
-    "@chainlink/contracts": "^0.6.1",
+    "@chainlink/contracts": "^0.8.0",
     "@chainlink/env-enc": "^1.0.5",
     "@chainlink/functions-toolkit": "^0.2.0",
     "@defi-wonderland/smock": "^2.0.7",

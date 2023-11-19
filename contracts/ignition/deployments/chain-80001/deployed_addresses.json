@@ -1,6 +1,6 @@
 {
-  "TokenFactory#ERC20BalanceOf": "0x001c72Bc057B620f97ce9C9512A53b57C7268026",
-  "TokenFactory#FunctionsConsumer": "0xDA64a337E4ff8d9Cca96506cd2fF6eF87205D0Df",
-  "TokenFactory#Token": "0xAB34Fc4139aB313768CCc77f2ef80e293d7630aD",
-  "TokenFactory#TokenFactory": "0xcC3E77B024A1Be143838d43386a857B90058789B"
+  "TokenFactory#FunctionsConsumer": "0x188b5c52657fa0007f70Fab062A240AD68F4E4d6",
+  "TokenFactory#ERC20BalanceOf": "0x144F2660E8eDE11B637fD628013aA1DA4Cf0c994",
+  "TokenFactory#Token": "0xF36C3f9f3466aC143EA17f57517969aED87cf191",
+  "TokenFactory#TokenFactory": "0x8520899fD1dA60F386Fd72f99DdE7881F7bDBc5C"
 }

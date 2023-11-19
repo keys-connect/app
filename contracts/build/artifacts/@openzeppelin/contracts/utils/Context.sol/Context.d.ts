@@ -20,11 +20,24 @@ export interface Context$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
+    contractName: "Context",
+    constructorArgs?: [],
+    config?: DeployContractConfig
+  ): Promise<GetContractReturnType<Context$Type["abi"]>>;
+  export function deployContract(
     contractName: "@openzeppelin/contracts/utils/Context.sol:Context",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<Context$Type["abi"]>>;
 
+  export function sendDeploymentTransaction(
+    contractName: "Context",
+    constructorArgs?: [],
+    config?: SendDeploymentTransactionConfig
+  ): Promise<{
+    contract: GetContractReturnType<Context$Type["abi"]>;
+    deploymentTransaction: GetTransactionReturnType;
+  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/utils/Context.sol:Context",
     constructorArgs?: [],
@@ -34,6 +47,11 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
+  export function getContractAt(
+    contractName: "Context",
+    address: Address,
+    config?: GetContractAtConfig
+  ): Promise<GetContractReturnType<Context$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/utils/Context.sol:Context",
     address: Address,

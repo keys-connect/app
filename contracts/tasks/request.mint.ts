@@ -109,8 +109,8 @@ task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) =
   const owner = await consumerContract.read.owner();
   console.log({ owner });
 
-  // const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, subscriptionId, callbackGasLimit];
-  const pars = ['', requestConfig.secretsLocation, encryptedSecretsReference, subscriptionId, callbackGasLimit];
+  // const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, [], [], subscriptionId, callbackGasLimit];
+  const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, subscriptionId, callbackGasLimit];
   console.log({ pars });
   const hash = await consumerContract.write.sendRequest(pars);
 

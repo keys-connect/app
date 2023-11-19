@@ -243,11 +243,24 @@ export interface IERC20Metadata$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
+    contractName: "IERC20Metadata",
+    constructorArgs?: [],
+    config?: DeployContractConfig
+  ): Promise<GetContractReturnType<IERC20Metadata$Type["abi"]>>;
+  export function deployContract(
     contractName: "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol:IERC20Metadata",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<IERC20Metadata$Type["abi"]>>;
 
+  export function sendDeploymentTransaction(
+    contractName: "IERC20Metadata",
+    constructorArgs?: [],
+    config?: SendDeploymentTransactionConfig
+  ): Promise<{
+    contract: GetContractReturnType<IERC20Metadata$Type["abi"]>;
+    deploymentTransaction: GetTransactionReturnType;
+  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol:IERC20Metadata",
     constructorArgs?: [],
@@ -257,6 +270,11 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
+  export function getContractAt(
+    contractName: "IERC20Metadata",
+    address: Address,
+    config?: GetContractAtConfig
+  ): Promise<GetContractReturnType<IERC20Metadata$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol:IERC20Metadata",
     address: Address,

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import {FunctionsClient} from "../@chainlink/contracts/src/v0.8/functions/dev/1_0_0/FunctionsClient.sol";
-import {ConfirmedOwner} from "../@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol";
-import {FunctionsRequest} from "../@chainlink/contracts/src/v0.8/functions/dev/1_0_0/libraries/FunctionsRequest.sol";
+import { FunctionsClient } from '@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/FunctionsClient.sol';
+import { ConfirmedOwner } from '@chainlink/contracts/src/v0.8/shared/access/ConfirmedOwner.sol';
+import { FunctionsRequest } from'@chainlink/contracts/src/v0.8/functions/dev/v1_0_0/libraries/FunctionsRequest.sol';
 
 import {Token} from './Token.sol';
 
@@ -43,8 +43,8 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     string calldata source,
     FunctionsRequest.Location secretsLocation,
     bytes calldata encryptedSecretsReference,
-    string[] calldata args,
-    bytes[] calldata bytesArgs,
+    // string[] calldata args,
+    // bytes[] calldata bytesArgs,
     uint64 subscriptionId,
     uint32 callbackGasLimit
   ) external onlyOwner {
@@ -53,15 +53,15 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     req.initializeRequest(FunctionsRequest.Location.Inline, FunctionsRequest.CodeLanguage.JavaScript, source);
     req.secretsLocation = secretsLocation;
     req.encryptedSecretsReference = encryptedSecretsReference;    
-    req.setArgs(args);
-    req.setBytesArgs(bytesArgs);
+    // req.setArgs(args);
+    // req.setBytesArgs(bytesArgs);
     
     s_lastRequestId = _sendRequest(req.encodeCBOR(), subscriptionId, callbackGasLimit, donId);
     
     // associate this request id to the NFT receiver;
-    address to = address(uint160(uint256(bytes32(bytesArgs[0]))));
-    receivers[s_lastRequestId] = to;
-    received[to] = true;
+    // address to = address(uint160(uint256(bytes32(bytesArgs[0]))));
+    // receivers[s_lastRequestId] = to;
+    // received[to] = true;
   }
 
   /**

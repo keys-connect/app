@@ -7,15 +7,6 @@ import "hardhat/types/artifacts";
 
 declare module "hardhat/types/artifacts" {
   interface ArtifactsMap {
-    IERC1155Errors: never;
-    IERC20Errors: never;
-    IERC721Errors: never;
-    IERC20: never;
-    IERC20Metadata: never;
-    Address: never;
-    Context: never;
-    Strings: never;
-    Math: never;
-    SignedMath: never;
+    
   }
 }

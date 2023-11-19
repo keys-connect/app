@@ -204,11 +204,24 @@ export interface IERC20$Type {
 
 declare module "@nomicfoundation/hardhat-viem/types" {
   export function deployContract(
+    contractName: "IERC20",
+    constructorArgs?: [],
+    config?: DeployContractConfig
+  ): Promise<GetContractReturnType<IERC20$Type["abi"]>>;
+  export function deployContract(
     contractName: "@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20",
     constructorArgs?: [],
     config?: DeployContractConfig
   ): Promise<GetContractReturnType<IERC20$Type["abi"]>>;
 
+  export function sendDeploymentTransaction(
+    contractName: "IERC20",
+    constructorArgs?: [],
+    config?: SendDeploymentTransactionConfig
+  ): Promise<{
+    contract: GetContractReturnType<IERC20$Type["abi"]>;
+    deploymentTransaction: GetTransactionReturnType;
+  }>;
   export function sendDeploymentTransaction(
     contractName: "@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20",
     constructorArgs?: [],
@@ -218,6 +231,11 @@ declare module "@nomicfoundation/hardhat-viem/types" {
     deploymentTransaction: GetTransactionReturnType;
   }>;
 
+  export function getContractAt(
+    contractName: "IERC20",
+    address: Address,
+    config?: GetContractAtConfig
+  ): Promise<GetContractReturnType<IERC20$Type["abi"]>>;
   export function getContractAt(
     contractName: "@openzeppelin/contracts/token/ERC20/IERC20.sol:IERC20",
     address: Address,
