@@ -68,6 +68,16 @@ app.post(`/key`, async (req, res) => {
   res.json(result);
 });
 
+app.get("/events", async (req, res) => {
+  return res.status(200).json({
+    events: await prisma.key.findMany({
+      include: {
+        keyRules: true,
+      },
+    }),
+  });
+});
+
 app.get("/events/:id", async (req, res) => {
   const { id } = req.params;
 

@@ -60,6 +60,8 @@ export default function EventPage() {
       </div>
     );
 
+  console.log({ data });
+
   return (
     <div className="text-center">
       <h1 className="font-bold text-4xl pb-6 tracking-tighter">

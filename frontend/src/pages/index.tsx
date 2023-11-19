@@ -15,6 +15,9 @@ export default function HomePage() {
         <div className="col-span-1 container flex flex-col items-center justify-center space-y-6 px-4 py-12 md:px-6 backdrop-blur-lg rounded-lg border shadow">
           <div className="flex flex-col space-y-4 sm:space-y-2 sm:space-x-0 sm:flex-col sm:items-center">
             <Button className="w-full font-bold">Enter as a User</Button>
+            <p className="text-muted-foreground tracking-tight">
+              View Your Keys
+            </p>
           </div>
         </div>
         <div className="col-span-1 row-span-2 flex flex-col items-center justify-center border shadow rounded-lg">
@@ -22,12 +25,15 @@ export default function HomePage() {
             <Link href="/create">Click Here</Link>
           </Button>
           <p className="text-muted-foreground pt-2 tracking-tight">
-            Quick-Launch Your Event or Campaign
+            Quick-Launch Your Campaign
           </p>
         </div>
         <div className="col-span-1 container flex flex-col items-center justify-center space-y-6 px-4 py-12 md:px-6 backdrop-blur-lg rounded-lg border shadow">
           <div className="flex flex-col space-y-4 sm:space-y-2 sm:space-x-0 sm:flex-col sm:items-center">
             <Button className="w-full font-bold">Enter as a Protocol</Button>
+            <p className="text-muted-foreground tracking-tight">
+              View Your Campaigns
+            </p>
           </div>
         </div>
       </div>

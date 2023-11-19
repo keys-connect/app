@@ -1,12 +1,14 @@
 import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogHeader,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,7 +60,9 @@ export function CreateKeyForm() {
         ],
       ],
       ADDRESS.FunctionsConsumer,
-      toHex(titleRef.current?.value || "", { size: 32 }),
+      toHex(titleRef.current?.value || "", {
+        size: 32,
+      }),
     ],
     enabled:
       Boolean(apecoinRule?.parameters?.[0]) && Boolean(titleRef.current?.value),
@@ -95,7 +99,9 @@ export function CreateKeyForm() {
   );
 
   const { toast } = useToast();
+  const [hasToastedWrite, setHasToastedWrite] = useState(false);
   const [hasToastedReceipt, setHasToastedReceipt] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   async function createKey() {
     try {
@@ -121,7 +127,14 @@ export function CreateKeyForm() {
           description: descriptionRef.current?.value,
           contactLink: contactLinkRef.current?.value,
           address,
-          contract: txReceipt?.contractAddress,
+          contract:
+            txReceipt?.contractAddress ||
+            txReceipt?.logs.find(
+              (log) =>
+                log.topics[0] ===
+                "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+            )?.address ||
+            "0xf0cea731116abb6ecbb7378bc862c3ad70b325ce",
           conditionals: rules.map((rule) => ({
             name: rule.name,
             title: rule.title,
@@ -149,15 +162,20 @@ export function CreateKeyForm() {
     e.preventDefault();
     if (writeAsync) {
       await writeAsync();
+    }
+  };
 
+  useEffect(() => {
+    if (writeData?.hash && !hasToastedWrite) {
       toast({
         title: "Event created!",
         description:
           "Please wait for the transaction to complete. Hash: " +
-          writeData?.hash,
+          writeData.hash,
       });
+      setHasToastedWrite(true);
     }
-  };
+  }, [hasToastedWrite, toast, writeData]);
 
   useEffect(() => {
     if (
@@ -165,7 +183,7 @@ export function CreateKeyForm() {
         txReceipt?.logs.find(
           (log) =>
             log.topics[0] ===
-            // wnershipTransferred (index_topic_1 address previousOwner, index_topic_2 address newOwner)
+            // OwnershipTransferred (index_topic_1 address previousOwner, index_topic_2 address newOwner)
             "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
         )) &&
       !keyId
@@ -173,13 +191,15 @@ export function CreateKeyForm() {
       if (!hasToastedReceipt) {
         toast({
           title: "Transaction completed!",
-          description: "Doing some entities behind the scene...",
+          description: "Doing some work behind the scene...",
         });
-        createKey();
+        createKey().then(() => {
+          setIsOpen(true);
+        });
         setHasToastedReceipt(true);
       }
     }
-  }, [createKey, hasToastedReceipt, keyId, toast, txReceipt]);
+  }, [hasToastedReceipt, keyId, toast, txReceipt]);
 
   return (
     <section className="gap-8 grid grid-cols-2 mx-auto">
@@ -329,6 +349,26 @@ export function CreateKeyForm() {
           </div>
         </div>
       </div>
+      <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Congratulations!</AlertDialogTitle>
+            <AlertDialogDescription>
+              Your event has been created. Here is a link to share with your
+              followers.
+              <Input
+                type="text"
+                disabled
+                defaultValue={`/events/${keyId}`}
+                className="mt-4 bg-slate-200 text-black"
+              />
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Close</AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </section>
   );
 }
