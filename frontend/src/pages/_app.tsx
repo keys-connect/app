@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 
 import { Layout } from "@/components/layout";
 import { Toaster } from "@/components/ui/toaster";
+import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import dynamic from "next/dynamic";
 import { DndProvider } from "react-dnd";
@@ -14,15 +15,20 @@ const Web3Modal = dynamic(
   }
 );
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
-    <Web3Modal>
-      <DndProvider backend={HTML5Backend}>
-        <Layout showNetworkButtons={pageProps.hideNetworkButtons}>
-          <Component {...pageProps} />
-          <Toaster />
-        </Layout>
-      </DndProvider>
-    </Web3Modal>
+    <SessionProvider session={session}>
+      <Web3Modal>
+        <DndProvider backend={HTML5Backend}>
+          <Layout showNetworkButtons={pageProps.hideNetworkButtons}>
+            <Component {...pageProps} />
+            <Toaster />
+          </Layout>
+        </DndProvider>
+      </Web3Modal>
+    </SessionProvider>
   );
 }

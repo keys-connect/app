@@ -5,6 +5,7 @@ import { useAccount, useQuery } from "wagmi";
 import { RuleType } from "@/constants/rules";
 import { Button } from "./ui/button";
 import { RefreshCwIcon } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 interface Props extends RuleItem {
   addRulePassed: (ruleName: string) => void;
@@ -49,10 +50,15 @@ export function EventRule({ description, name, title, addRulePassed }: Props) {
               {description}
             </p>
           </div>
-          <Button onClick={() => refetch()} variant={"outline"}>
-            <RefreshCwIcon className="w-4 h-4 mr-2" />
-            Refetch
-          </Button>
+          <div className="flex items-center space-x-4">
+            {name === "worldcoin" && (
+              <Button onClick={() => signIn()}>Sign In</Button>
+            )}
+            <Button onClick={() => refetch()} variant={"outline"}>
+              <RefreshCwIcon className="w-4 h-4 mr-2" />
+              Refetch
+            </Button>
+          </div>
         </div>
       </div>
     );

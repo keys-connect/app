@@ -27,7 +27,7 @@ export const RULES = [
   {
     name: "worldcoin",
     title: "Worldcoin ID",
-    description: "Check if user has Worldcoin ID",
+    description: "Require user to login with Worldcoin",
   },
 ] as const;
 

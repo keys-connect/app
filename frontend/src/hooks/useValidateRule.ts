@@ -1,4 +1,5 @@
 import { RuleType } from "@/constants/rules";
+import { getSession } from "next-auth/react";
 import { Address, mainnet, useEnsAvatar, useEnsName, useQuery } from "wagmi";
 
 type Parameter = {
@@ -36,6 +37,8 @@ export function useValidateRule({ address, type, isTestnet }: Parameter) {
         case "apecoin": {
         }
         case "worldcoin": {
+          const session = await getSession();
+          return Boolean(session?.user?.name);
         }
         default: {
           return false;
