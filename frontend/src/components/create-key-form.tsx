@@ -159,10 +159,17 @@ export function CreateKeyForm() {
     }
   };
 
-  console.log({ txReceipt, keyId });
-
   useEffect(() => {
-    if (txReceipt?.contractAddress && !keyId) {
+    if (
+      (txReceipt?.contractAddress ||
+        txReceipt?.logs.find(
+          (log) =>
+            log.topics[0] ===
+            // wnershipTransferred (index_topic_1 address previousOwner, index_topic_2 address newOwner)
+            "0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"
+        )) &&
+      !keyId
+    ) {
       if (!hasToastedReceipt) {
         toast({
           title: "Transaction completed!",
@@ -172,7 +179,7 @@ export function CreateKeyForm() {
         setHasToastedReceipt(true);
       }
     }
-  }, [createKey, keyId, txReceipt]);
+  }, [createKey, hasToastedReceipt, keyId, toast, txReceipt]);
 
   return (
     <section className="gap-8 grid grid-cols-2 mx-auto">
