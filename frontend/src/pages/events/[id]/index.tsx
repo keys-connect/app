@@ -74,7 +74,10 @@ export default function EventPage() {
           className="border-2 rounded-full aspect-square object-cover"
         />
       </div>
-      <EventRules rules={data.event.keyRules} />
+      <EventRules
+        rules={data.event.keyRules}
+        contractAddress={data.event.address}
+      />
       <div className="flex space-x-4 justify-center pt-12"></div>
     </div>
   );

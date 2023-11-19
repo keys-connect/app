@@ -1,13 +1,33 @@
+import {
+  usePrepareTokenMintConditions,
+  useTokenMintConditions,
+} from "@/lib/generated";
 import { useState } from "react";
+import { Address, useAccount, useNetwork } from "wagmi";
 import { EventRule } from "./event-rule";
 import { RuleItem } from "./rules";
+import { Button } from "./ui/button";
 
 interface Props {
   rules: RuleItem[];
+  contractAddress: Address;
 }
 
-export default function EventRules({ rules }: Props) {
+export default function EventRules({ rules, contractAddress }: Props) {
   const [passedRules, setPassedRules] = useState<string[]>([]);
+  const { address } = useAccount();
+  const { chain } = useNetwork();
+
+  const { config } = usePrepareTokenMintConditions({
+    address: contractAddress,
+    account: address,
+    chainId: chain?.id,
+    args: [address!],
+    enabled: address !== undefined,
+  });
+  const { data, writeAsync } = useTokenMintConditions(config);
+
+  console.log({ data });
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 max-w-4xl mx-auto">
@@ -30,6 +50,13 @@ export default function EventRules({ rules }: Props) {
               </p>
             </div>
           </div>
+          <Button
+            onClick={() => {
+              writeAsync?.();
+            }}
+          >
+            Mint Soulbound k3y
+          </Button>
         </div>
       </div>
     </section>
