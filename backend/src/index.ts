@@ -41,6 +41,7 @@ app.post(`/key`, async (req, res) => {
       description,
       endDate,
       startDate,
+      // @ts-ignore
       address: contract,
       keyRules: {
         create: conditionals.map((conditional: any) => ({
