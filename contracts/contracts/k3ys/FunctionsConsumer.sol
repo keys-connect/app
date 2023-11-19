@@ -7,6 +7,9 @@ import {FunctionsRequest} from "../@chainlink/contracts/src/v0.8/functions/dev/1
 
 import {Token} from './Token.sol';
 
+// import "hardhat/console.sol";
+
+
 /**
  * @title Chainlink Functions example on-demand consumer contract example
  */
@@ -37,32 +40,26 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
    * @param callbackGasLimit Maximum amount of gas used to call the inherited `handleOracleFulfillment` method
    */
   function sendRequest(
-    address to,
     string calldata source,
     FunctionsRequest.Location secretsLocation,
     bytes calldata encryptedSecretsReference,
+    string[] calldata args,
+    bytes[] calldata bytesArgs,
     uint64 subscriptionId,
     uint32 callbackGasLimit
   ) external onlyOwner {
-    if (received[to]) revert CantMintTwice(to);
-
+    
     FunctionsRequest.Request memory req;
     req.initializeRequest(FunctionsRequest.Location.Inline, FunctionsRequest.CodeLanguage.JavaScript, source);
     req.secretsLocation = secretsLocation;
-    req.encryptedSecretsReference = encryptedSecretsReference;
-    
-    string[] memory argsStr = new string[](1);
-    req.setArgs(argsStr);
-
-    bytes memory toBytes = new bytes(uint256(uint160(to)));
-    bytes[] memory args = new bytes[](1);
-    args[0] = toBytes;
-
-    req.setBytesArgs(args);
+    req.encryptedSecretsReference = encryptedSecretsReference;    
+    req.setArgs(args);
+    req.setBytesArgs(bytesArgs);
     
     s_lastRequestId = _sendRequest(req.encodeCBOR(), subscriptionId, callbackGasLimit, donId);
     
     // associate this request id to the NFT receiver;
+    address to = address(uint160(uint256(bytes32(bytesArgs[0]))));
     receivers[s_lastRequestId] = to;
     received[to] = true;
   }

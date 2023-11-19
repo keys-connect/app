@@ -70,4 +70,5 @@ contract Token is ERC721URIStorageCustom, Initializable, Ownable {
     function mintOracle(address to) public onlyOracle {
         _safeMint(to, nextTokenId++);
     }
+
 }

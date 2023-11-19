@@ -35,7 +35,8 @@
     "./deploy",
     "./test/scenarios.json",
     "@app",
-    "utils"
+    "utils",
+    "ignition/deployments/**/*.json"
   ],
   "exclude": ["**/node_modules", ".husky", "./src/styles/css", "./tailwind.config.js"],
   "files": ["./hardhat.config.ts", "helpers/types/__global.ts"]

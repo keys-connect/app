@@ -7,8 +7,9 @@
     "node": ">=18"
   },
   "scripts": {
+    "redeploy": "rm -rf ignition/deployments/chain-* && yarn compile && yarn deploy --network mumbai",
     "chain": "hardhat node --network hardhat",
-    "test": "hardhat test --network hardhat",
+    "test": "hardhat test",
     "compile": "rm -rf ./build && mkdir ./build && hardhat compile --force && yarn generate",
     "generate": "wagmi generate",
     "deploy": "npx hardhat ignition deploy ignition/modules/TokenFactory.ts",

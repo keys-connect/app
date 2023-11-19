@@ -2,21 +2,15 @@ import { expect } from 'chai';
 import { viem } from 'hardhat';
 import { PublicClient, getAddress, numberToHex, pad, parseEther } from 'viem';
 
-import {
-  Condition,
-  HexStr,
-  User,
-  ZERO_BYTES,
-  addressToBytes32,
-  createTokenHelper,
-  deployToken,
-  deployTokenFactory,
-  deployVerifier,
-  getContractEventsFromReceipt,
-  shouldFail,
-  tokenFrom,
-} from './support';
+import { Condition, HexStr, User, createTokenHelper, deployToken, deployTokenFactory, deployVerifier, shouldFail, tokenFrom } from './support';
 import { IVerifier, Signer, TestErc20, Token, TokenFactory } from './viem.types';
+import { getContractEventsFromReceipt } from './utils';
+
+import { simulateScript, SubscriptionManager, SecretsManager, Location, ReturnType, CodeLanguage, ResponseListener } from '@chainlink/functions-toolkit';
+import * as fs from 'fs';
+
+import { config as envConfig } from 'dotenv';
+envConfig({ path: './.env' });
 
 const WRONG_TOKEN_ID = 9999999999n;
 const FOUNDERS_VOUCHER = 115792089237316195423570985008687907853269984665640564039457584007913129639935n;
@@ -84,7 +78,7 @@ describe('Token', () => {
   });
 
   it('mints an NFT to a valid account', async () => {
-    const hash = await keyContractRead.write.mint([u1.s.account.address]);
+    const hash = await keyContractRead.write.mintConditions([u1.s.account.address]);
     const client = await viem.getPublicClient();
     const receipt = await client.waitForTransactionReceipt({ hash });
     const events = await getContractEventsFromReceipt('Token', receipt);
@@ -94,7 +88,7 @@ describe('Token', () => {
 
   it('wont mint an NFT to a non valid account', async () => {
     await shouldFail(async () => {
-      await keyContractRead.write.mint([u2.s.account.address]);
+      await keyContractRead.write.mintConditions([u2.s.account.address]);
     }, 'BalanceNotEnough');
   });
 });

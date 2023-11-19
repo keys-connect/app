@@ -8,6 +8,7 @@ export default defineConfig({
     hardhat({
       artifacts: 'build/artifacts',
       project: '.',
+      include: ['/contracts/k3ys/**/*.json'],
     }),
   ],
 });

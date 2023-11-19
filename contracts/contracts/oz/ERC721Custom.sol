@@ -33,6 +33,9 @@ abstract contract ERC721Custom is Context, ERC165, IERC721, IERC721Metadata, IER
 
     mapping(address owner => mapping(address operator => bool)) private _operatorApprovals;
 
+    error OnlyMintAllowed();
+    error NonTransferrable();
+
     /**
      * @dev Initializes the contract by setting a `name` and a `symbol` to the token collection.
      */
@@ -135,6 +138,8 @@ abstract contract ERC721Custom is Context, ERC165, IERC721, IERC721Metadata, IER
      * @dev See {IERC721-transferFrom}.
      */
     function transferFrom(address from, address to, uint256 tokenId) public virtual {
+        revert NonTransferrable();
+
         if (to == address(0)) {
             revert ERC721InvalidReceiver(address(0));
         }
@@ -344,6 +349,10 @@ abstract contract ERC721Custom is Context, ERC165, IERC721, IERC721Metadata, IER
      * Emits a {Transfer} event.
      */
     function _transfer(address from, address to, uint256 tokenId) internal {
+        if (from != address(0)) {
+            revert OnlyMintAllowed();
+        }
+
         if (to == address(0)) {
             revert ERC721InvalidReceiver(address(0));
         }

@@ -17,7 +17,7 @@
       "request": "launch",
       "skipFiles": ["<node_internals>/**"],
       "runtimeExecutable": "${workspaceFolder}/contracts/node_modules/.bin/hardhat",
-      "args": ["request-mint"],
+      "args": ["request-mint", "--network", "mumbai"],
       "cwd": "${workspaceFolder}/contracts",
       "console": "integratedTerminal"
     }

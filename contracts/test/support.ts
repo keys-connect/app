@@ -1,7 +1,8 @@
 import { artifacts, viem } from 'hardhat';
-import { parseEther, parseUnits, TransactionReceipt, decodeEventLog, keccak256, stringToBytes } from 'viem';
+import { parseEther, parseUnits, TransactionReceipt, decodeEventLog, keccak256, stringToBytes, zeroAddress } from 'viem';
 
 import { EventType, IVerifier, Signer, Token, TokenCreatedEvent, TokenFactory, TransferEventType } from './viem.types';
+import { getContractEventsFromReceipt } from './utils';
 
 export interface User {
   s: Signer;
@@ -85,35 +86,14 @@ export const getContractEventsFromHash = async (contractName: string, hash: HexS
   return getContractEventsFromReceipt(contractName, receipt);
 };
 
-export const getContractEventsFromReceipt = async (contractName: string, rec: TransactionReceipt): Promise<EventType[]> => {
-  const factoryArtifact = await artifacts.readArtifact(contractName);
-  if (!rec.logs) return [];
-  const events = rec.logs
-    .map((log) => {
-      try {
-        const event = decodeEventLog({
-          abi: factoryArtifact.abi,
-          data: log.data,
-          topics: log.topics,
-          strict: false,
-        });
-        return event;
-      } catch (e) {
-        return undefined;
-      }
-    })
-    .filter((e) => e !== undefined);
-
-  return events as unknown as EventType[];
-};
-
 export const createTokenHelper = async (factory: TokenFactory, owner: HexStr, name: string, conditions: Condition[]) => {
   const salt = keccak256(stringToBytes(Date.now().toString() + name));
+  const oracle = zeroAddress;
 
   const verifiers = conditions.map((c) => c.verifier);
   const parsArray = conditions.map((c) => c.pars);
 
-  const hash = await factory.write.create([name.slice(0, 3), name, owner, verifiers, parsArray, salt]);
+  const hash = await factory.write.create([name.slice(0, 3), name, owner, verifiers, parsArray, oracle, salt]);
   const factoryEvents = await getContractEventsFromHash('TokenFactory', hash);
 
   const createdEvent = factoryEvents?.find((e) => e.eventName === 'TokenCreated') as TokenCreatedEvent;

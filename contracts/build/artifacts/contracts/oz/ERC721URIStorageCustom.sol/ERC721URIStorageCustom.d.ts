@@ -116,6 +116,16 @@ export interface ERC721URIStorageCustom$Type {
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "NonTransferrable",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyMintAllowed",
+      "type": "error"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
