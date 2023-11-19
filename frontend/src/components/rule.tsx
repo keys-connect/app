@@ -29,7 +29,7 @@ export function Rule({
 
   useEffect(() => {
     updateRule(parameters);
-  }, [parameters, updateRule]);
+  }, [parameters]);
 
   return (
     <div>
@@ -47,11 +47,11 @@ export function Rule({
           {name === "apecoin" && (
             <Input
               required
-              value={parameters[0]}
+              value={parameters?.[0] || ""}
+              type="number"
               onChange={(e) => {
                 setParameters((prev) => {
-                  prev[0] = e.target.value;
-                  return prev;
+                  return [e.target.value, ...prev.slice(1)];
                 });
               }}
               placeholder="Enter amount"

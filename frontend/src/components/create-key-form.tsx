@@ -21,8 +21,8 @@ import { FormEventHandler, useEffect, useRef, useState } from "react";
 import { useDrop } from "react-dnd";
 import { pad, toHex } from "viem";
 import { polygonMumbai } from "viem/chains";
-import { useAccount, useWaitForTransaction } from "wagmi";
-import { RULES } from "../constants/components";
+import { useAccount, useNetwork, useWaitForTransaction } from "wagmi";
+import { RULES } from "../constants/rules";
 import { Rule } from "./rule";
 import { RuleItem, Rules } from "./rules";
 import { useToast } from "./ui/use-toast";
@@ -37,13 +37,15 @@ export function CreateKeyForm() {
   const ipfsHashRef = useRef<HTMLInputElement>(null);
 
   const { address } = useAccount();
+  const { chain } = useNetwork();
   const [rules, setRules] = useState<(RuleItem & { parameters?: string[] })[]>(
     []
   );
   const apecoinRule = rules.find((r) => r.name === "apecoin");
   const { config } = usePrepareTokenFactoryCreate({
     address: ADDRESS.TokenFactory,
-    chainId: polygonMumbai.id,
+    chainId: chain?.id,
+    account: address,
     args: [
       titleRef.current?.value!,
       (titleRef.current?.value || "").slice(0, 3).toUpperCase()!,
@@ -59,16 +61,22 @@ export function CreateKeyForm() {
       toHex(titleRef.current?.value || "", { size: 32 }),
     ],
     enabled:
-      apecoinRule?.parameters?.[0] !== undefined &&
-      Boolean(titleRef.current?.value),
+      Boolean(apecoinRule?.parameters?.[0]) && Boolean(titleRef.current?.value),
   });
-  const { data: writeData, writeAsync } = useTokenFactoryCreate(config);
+  let {
+    data: writeData,
+    writeAsync,
+    isLoading,
+  } = useTokenFactoryCreate(config);
+  writeData = {
+    hash: "0x6a8e397685af27b5d1ef3b7fa48ecdcd4cea6e8e7c75ec1817303db5358216c3",
+  };
   const { data: txReceipt } = useWaitForTransaction({
     hash: writeData?.hash,
-    chainId: polygonMumbai.id,
+    chainId: chain?.id,
     enabled: writeData !== undefined,
   });
-  const [keyId, setKeyId] = useState();
+  const [keyId, setKeyId] = useState<string>();
 
   const [{ isOver }, drop] = useDrop(
     () => ({
@@ -89,14 +97,8 @@ export function CreateKeyForm() {
     [rules]
   );
 
-  const [isOpen, setIsOpen] = useState(false);
   const { toast } = useToast();
-
-  useEffect(() => {
-    if (txReceipt) {
-      createKey();
-    }
-  }, [createKey, txReceipt]);
+  const [hasToastedReceipt, setHasToastedReceipt] = useState(false);
 
   async function createKey() {
     try {
@@ -122,7 +124,7 @@ export function CreateKeyForm() {
           description: descriptionRef.current?.value,
           contactLink: contactLinkRef.current?.value,
           address,
-          contract: writeData?.hash,
+          contract: txReceipt?.contractAddress,
           conditionals: rules.map((rule) => ({
             name: rule.name,
             title: rule.title,
@@ -135,7 +137,7 @@ export function CreateKeyForm() {
 
       const data = await res.json();
 
-      console.log({ data });
+      setKeyId(data.id);
     } catch (e) {
       toast({
         title: "Error creating event",
@@ -148,28 +150,27 @@ export function CreateKeyForm() {
 
   const onSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    console.log({
-      config,
-      rules,
-      enabled: apecoinRule?.parameters?.[0] !== undefined,
-      a: Boolean(titleRef.current?.value),
-      args: [
-        titleRef.current?.value!,
-        (titleRef.current?.value || "").slice(0, 3).toUpperCase()!,
-        address!,
-        [ADDRESS.TokenFactoryERC20BalanceOf],
-        [
-          [
-            pad(ADDRESS.DummyErc20, { size: 32 }),
-            toHex(+apecoinRule?.parameters?.[0]! || "", { size: 32 }),
-          ],
-        ],
-        ADDRESS.FunctionsConsumer,
-        toHex(titleRef.current?.value || "", { size: 32 }),
-      ],
-    });
     await writeAsync?.();
+
+    toast({
+      title: "Event created!",
+      description:
+        "Please wait for the transaction to complete. Hash: " + writeData?.hash,
+    });
   };
+
+  useEffect(() => {
+    if (txReceipt?.contractAddress && !keyId) {
+      if (!hasToastedReceipt) {
+        toast({
+          title: "Transaction completed!",
+          description: "Doing some entities behind the scene...",
+        });
+        createKey();
+        setHasToastedReceipt(true);
+      }
+    }
+  }, [createKey, keyId, txReceipt]);
 
   return (
     <section className="gap-8 grid grid-cols-2 mx-auto">
@@ -272,7 +273,7 @@ export function CreateKeyForm() {
         </div>
         <Rules currentRules={rules} />
         <div>
-          <Button className="w-full" type="submit">
+          <Button className="w-full" type="submit" disabled={isLoading}>
             Create Event/Campaign
           </Button>
         </div>
@@ -300,11 +301,15 @@ export function CreateKeyForm() {
                   }
                   updateRule={(parameters) => {
                     setRules((prev) => {
-                      const rule = prev.find(
+                      const ruleIndex = prev.findIndex(
                         (c) => c.name === conditional.name
                       );
-                      if (rule) {
-                        rule.parameters = parameters;
+                      if (ruleIndex !== -1) {
+                        return [
+                          ...prev.slice(0, ruleIndex),
+                          { ...prev[ruleIndex], parameters },
+                          ...prev.slice(ruleIndex + 1),
+                        ];
                       }
                       return prev;
                     });
@@ -315,33 +320,6 @@ export function CreateKeyForm() {
           </div>
         </div>
       </div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Step 1: C</DialogTitle>
-            <DialogDescription>
-              Please confirm your details before proceeding to the next step.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right" htmlFor="name">
-                Name
-              </Label>
-              <Input className="col-span-3" id="name" value="" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right" htmlFor="email">
-                Email
-              </Label>
-              <Input className="col-span-3" id="email" value="" />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit">Next</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }

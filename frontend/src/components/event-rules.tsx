@@ -7,7 +7,7 @@ interface Props {
 }
 
 export default function EventRules({ rules }: Props) {
-  const [score, setScore] = useState(0);
+  const [passedRules, setPassedRules] = useState<string[]>([]);
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 max-w-4xl mx-auto">
@@ -17,13 +17,17 @@ export default function EventRules({ rules }: Props) {
             <EventRule
               key={rule.name}
               {...rule}
-              addScore={(amount) => setScore((prev) => prev + amount)}
+              addRulePassed={(ruleName) =>
+                setPassedRules((prev) => [...prev, ruleName])
+              }
             />
           ))}
           <div className="p-4 overflow-visible transition-all duration-200 max-w-md mx-auto">
             <div>
               <h3 className="text-4xl font-extrabold">Total points: </h3>
-              <p className="text-5xl font-extrabold text-green-700">{score}</p>
+              <p className="text-5xl font-extrabold text-green-700">
+                {new Set(passedRules).size}
+              </p>
             </div>
           </div>
         </div>

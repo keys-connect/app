@@ -1,5 +1,4 @@
 import EventRules from "@/components/event-rules";
-import { useValidateRule } from "@/hooks/useValidateRule";
 import { useRouter } from "next/router";
 import { useAccount, useQuery } from "wagmi";
 
@@ -31,22 +30,16 @@ export default function EventPage() {
   });
   const { address } = useAccount();
 
-  const { data: isValid } = useValidateRule({
-    address,
-    type: "safe",
-    isTestnet: false,
-  });
-
-  console.log({ data });
-
   if (!id) {
     return null;
   }
 
   if (!data || !data.event) {
     return (
-      <div>
-        <h1>No event found.</h1>
+      <div className="text-center">
+        <h1 className="font-bold text-3xl py-12 tracking-tig">
+          No event found.
+        </h1>
       </div>
     );
   }
@@ -54,10 +47,12 @@ export default function EventPage() {
   if (!address)
     return (
       <div className="text-center">
-        <img
-          src={`https://gateway.lighthouse.storage/ipfs/${data.event.hash}`}
-          alt="Logo"
-        />
+        <div className="flex items-center justify-center">
+          <img
+            src={`https://gateway.lighthouse.storage/ipfs/${data.event.hash}`}
+            alt="Logo"
+          />
+        </div>
         <div className="flex justify-center pt-12">
           <w3m-connect-button />
           <w3m-network-button />
@@ -67,7 +62,9 @@ export default function EventPage() {
 
   return (
     <div className="text-center">
-      <h1 className="font-bold text-4xl pb-6">{data.event.title}</h1>
+      <h1 className="font-bold text-4xl pb-6 tracking-tighter">
+        {"Lens x ApeCoin Event"}
+      </h1>
       <div className="flex items-center justify-center">
         <img
           src={`https://gateway.lighthouse.storage/ipfs/${data.event.hash}`}

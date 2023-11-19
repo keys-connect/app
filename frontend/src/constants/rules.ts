@@ -17,7 +17,12 @@ export const RULES = [
   {
     name: "apecoin",
     title: "Apecoin DAO",
-    description: "Check amount of APECOINs a user has",
+    description: "Check if user has sufficient APECOINs",
+  },
+  {
+    name: "worldcoin",
+    title: "Worldcoin ID",
+    description: "Check if user has Worldcoin ID",
   },
 ] as const;
 
