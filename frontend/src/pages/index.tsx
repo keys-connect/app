@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ArrowRightIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -90,6 +91,11 @@ export default function HomePage() {
           </p>
         </div>
       </div>
+      <Button className="mt-12" asChild>
+        <Link href="/events">
+          Discover More <ArrowRightIcon className="w-4 h-4 ml-1" />
+        </Link>
+      </Button>
     </section>
   );
 }
