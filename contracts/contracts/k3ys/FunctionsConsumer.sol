@@ -43,8 +43,8 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     string calldata source,
     FunctionsRequest.Location secretsLocation,
     bytes calldata encryptedSecretsReference,
-    // string[] calldata args,
-    // bytes[] calldata bytesArgs,
+    string[] calldata args,
+    bytes[] calldata bytesArgs,
     uint64 subscriptionId,
     uint32 callbackGasLimit
   ) external onlyOwner {
@@ -53,8 +53,16 @@ contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
     req.initializeRequest(FunctionsRequest.Location.Inline, FunctionsRequest.CodeLanguage.JavaScript, source);
     req.secretsLocation = secretsLocation;
     req.encryptedSecretsReference = encryptedSecretsReference;    
-    // req.setArgs(args);
-    // req.setBytesArgs(bytesArgs);
+    req.setArgs(args);
+    req.setBytesArgs(bytesArgs);
+
+    // string[] memory argsStr = new string[](1);
+    // req.setArgs(argsStr);
+
+    // bytes[] memory args = new bytes[](1);
+    // bytes memory toBytes = new bytes(0);
+    // args[0] = toBytes;
+    // req.setBytesArgs(args);
     
     s_lastRequestId = _sendRequest(req.encodeCBOR(), subscriptionId, callbackGasLimit, donId);
     

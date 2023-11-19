@@ -1,4 +1,4 @@
-import { artifacts, viem } from 'hardhat';
+import { viem } from 'hardhat';
 import { parseEther, parseUnits, TransactionReceipt, decodeEventLog, keccak256, stringToBytes, zeroAddress } from 'viem';
 
 import { EventType, IVerifier, Signer, Token, TokenCreatedEvent, TokenFactory, TransferEventType } from './viem.types';

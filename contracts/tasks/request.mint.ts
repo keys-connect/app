@@ -10,6 +10,8 @@ import { networks } from '../chainlink-fun-config/networks';
 import { pad, stringToHex } from 'viem';
 import { getContractEventsFromReceipt } from '../test/utils';
 
+export const ZERO_BYTES = '0x0000000000000000000000000000000000000000000000000000000000000000';
+
 task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) => {
   const viem = hre.viem;
   const ethers = hre.ethers;
@@ -109,8 +111,8 @@ task('request-mint', 'request a trusted minimized mint', async (taskArgs, hre) =
   const owner = await consumerContract.read.owner();
   console.log({ owner });
 
-  // const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, [], [], subscriptionId, callbackGasLimit];
-  const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, subscriptionId, callbackGasLimit];
+  const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, [''], [ZERO_BYTES], subscriptionId, callbackGasLimit];
+  // const pars = [requestConfig.source, requestConfig.secretsLocation, encryptedSecretsReference, subscriptionId, callbackGasLimit];
   console.log({ pars });
   const hash = await consumerContract.write.sendRequest(pars);
 
