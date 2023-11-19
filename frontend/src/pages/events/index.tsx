@@ -3,7 +3,7 @@ import { useQuery } from "wagmi";
 
 async function getEvents() {
   try {
-    const response = await fetch(process.env.BACKEND_URL + "/events");
+    const response = await fetch(process.env.NEXT_PUBLIC_BACKEND_URL + "/events");
     const json = await response.json();
     return json;
   } catch (e) {
